@@ -1,0 +1,47 @@
+# Default values for django-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+appName: 
+
+# Load env from secrets or configMap
+envFrom: 
+  - secretRef:
+      name: super-secret
+  - configMapRef:
+      name: superconfigmap
+
+# Load specific key in env
+env:
+  - name: DATABASE_URL
+    valueFrom:
+      secretKeyRef:
+        name: apps-portal-pguser-apps-portal
+        key: uri
+
+# change liveness and readiness
+livenessProbe:
+  httpGet:
+    path: /health_check/
+    port: 8000
+    httpHeaders:
+      - name: Host
+        value: chart-example.local
+readinessProbe:
+  httpGet:
+    path: /health_check/
+    port: 8000
+    httpHeaders:
+      - name: Host
+        value: chart-example.local
+
+cronJobs:
+  - name: "erase-data"
+    schedule: 0 0 * * 0
+    command: 
+      - /bin/bash
+      - -c
+      - |
+        ./manage.py flush --no-input
+        ./manage.py loaddata initial_user initial_project_templates
+        ./manage.py load_sampledata
