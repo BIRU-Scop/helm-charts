@@ -1,0 +1,25 @@
+apiVersion: v1
+entries:
+  basic-web-app:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-12-17T13:26:20.634042588Z"
+    description: A Helm chart for Kubernetes
+    digest: 06ac7f79d4b284f6f8213eb2603cb896bb96848015ff46ecfc0b2f4c4012dc88
+    name: basic-web-app
+    type: application
+    urls:
+    - https://github.com/BIRU-Scop/helm-charts/releases/download/basic-web-app-0.1.0/basic-web-app-0.1.0.tgz
+    version: 0.1.0
+  django-app:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-12-17T13:26:20.82513118Z"
+    description: A Helm chart for Kubernetes
+    digest: 4110f8f89badef83341eb5d49019e834a5fb4e65f76e7801775c387d93034da2
+    name: django-app
+    type: application
+    urls:
+    - https://github.com/BIRU-Scop/helm-charts/releases/download/django-app-0.1.0/django-app-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-12-17T13:26:20.825136911Z"
