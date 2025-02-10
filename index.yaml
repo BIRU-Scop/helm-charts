@@ -22,4 +22,63 @@ entries:
     urls:
     - https://github.com/BIRU-Scop/helm-charts/releases/download/django-app-0.1.0/django-app-0.1.0.tgz
     version: 0.1.0
-generated: "2024-12-17T13:26:20.825136911Z"
+  project-applicationset:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-02-10T14:35:52.842875661Z"
+    description: A Helm chart for Kubernetes
+    digest: 94e64832ea7ccb1f70852b5a01cc99c7210407db87f23d3d6b7aed299ce17ce6
+    name: project-applicationset
+    type: application
+    urls:
+    - https://github.com/BIRU-Scop/helm-charts/releases/download/project-applicationset-0.1.0/project-applicationset-0.1.0.tgz
+    version: 0.1.0
+  tenzu:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-02-10T14:35:53.011316876Z"
+    dependencies:
+    - name: tenzu-back
+      repository: file://../tenzu-back
+      version: 0.1.0
+    - name: tenzu-front
+      repository: file://../tenzu-front
+      version: 0.1.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami/
+      version: 20.2.1
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami/
+      version: 16.3.2
+    description: A Helm chart for Kubernetes
+    digest: 5de1897ded7df74d003bcda9b021eda0fd3e4b7240b8f0504d860c7efa767b42
+    name: tenzu
+    type: application
+    urls:
+    - https://github.com/BIRU-Scop/helm-charts/releases/download/tenzu-0.1.0/tenzu-0.1.0.tgz
+    version: 0.1.0
+  tenzu-back:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-02-10T14:35:53.123857399Z"
+    description: A Helm chart for Kubernetes
+    digest: e870c025f462bc7d0cf858e303b619114634365fc672035b689da0783a7c1925
+    name: tenzu-back
+    type: application
+    urls:
+    - https://github.com/BIRU-Scop/helm-charts/releases/download/tenzu-back-0.1.0/tenzu-back-0.1.0.tgz
+    version: 0.1.0
+  tenzu-front:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-02-10T14:35:53.218865372Z"
+    description: A Helm chart for Kubernetes
+    digest: c047ef1e636b115df92f253936a8356c167b73daf5cb2654ec7309cdf3d268ef
+    name: tenzu-front
+    type: application
+    urls:
+    - https://github.com/BIRU-Scop/helm-charts/releases/download/tenzu-front-0.1.0/tenzu-front-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-02-10T14:35:53.218871714Z"
