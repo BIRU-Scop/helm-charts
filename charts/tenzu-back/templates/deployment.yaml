@@ -1,0 +1,259 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "tenzu-back.fullname" . }}-caddy"
+  labels:
+    {{- include "tenzu-back.caddyLabels" . | nindent 4 }}
+spec:
+  replicas: {{.Values.caddy.replicas}}
+  selector:
+    matchLabels:
+      {{- include "tenzu-back.caddyLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "tenzu-back.caddyLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-caddy
+          image: caddy:2.4.5-alpine
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /live/
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /ready/
+              port: 80
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: public
+              mountPath: /code/public/
+            - mountPath: /etc/caddy/Caddyfile
+              name: config
+              subPath: Caddyfile
+      volumes:
+        - name: public
+          persistentVolumeClaim:
+            claimName: pvc-{{ .Release.Name }}
+        - name: config
+          configMap:
+            name: "{{ include "tenzu-back.fullname" . }}-caddy-config"
+            items:
+              - key: Caddyfile
+                path: Caddyfile
+                mode: 0644
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tenzu-back.fullname" . }}
+  labels:
+    {{- include "tenzu-back.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tenzu-back.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      {{- with .Values.podAnnotations }}
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- include "tenzu-back.secretDependenciesAnnotations" . | nindent 8 }}
+      labels:
+        {{- include "tenzu-back.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tenzu-back.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SITE_DOMAIN
+              value: {{ .Values.global.tenzu.backendDomain }}
+            - name: DJANGO_SETTINGS_MODULE
+              value: "configurations.settings"
+            - name: TENZU_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- include "tenzu-back.urls" . | nindent 12 -}}
+            {{- include "tenzu-back.sentryEnvValues" . | nindent 12 -}}
+            {{- include "tenzu-back.redisEnvValues" . | nindent 12 -}}
+            {{- include "tenzu-back.postgresqlEnvValues" . | nindent 12 -}}
+            {{- include "tenzu-back.emailEnvValues" . | nindent 12 -}}
+            {{- if not (empty .Values.env )}}
+            {{- toYaml .Values.env | nindent 12 }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: tenzu-secrets
+          {{- if not (empty .Values.envFrom )}}
+          {{- toYaml .Values.envFrom | nindent 12 }}
+          {{- end }}
+          command: ["gunicorn"]
+          args:
+            - "configurations.asgi:application"
+            - "-k"
+            - "uvicorn.workers.UvicornWorker"
+            - "-n"
+            - "{{ include "tenzu-back.fullname" . }}"
+            - "-w"
+            - "{{ .Values.workersQuantity }}"
+            - "-t"
+            - "{{ .Values.workersTimeout }}"
+            - "-b 0.0.0.0:{{ .Values.service.port }}"
+            - "--access-logfile"
+            - "-"
+            - "--log-file"
+            - "-"
+            - "--capture-output"
+            - "--log-level"
+            - "{{ .Values.logLevel | default "warning" }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          volumeMounts:
+            - name: public
+              mountPath: /code/public/
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: public
+          persistentVolumeClaim:
+            claimName: pvc-{{ .Release.Name }}
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tenzu-back.fullname" . }}-worker
+  labels:
+    {{- include "tenzu-back.workerLabels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tenzu-back.workerLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      {{- include "tenzu-back.secretDependenciesAnnotations" . | nindent 8 }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tenzu-back.workerLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tenzu-back.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TENZU_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- include "tenzu-back.urls" . | nindent 12 -}}
+            {{- include "tenzu-back.sentryEnvValues" . | nindent 12 -}}
+            {{- include "tenzu-back.redisEnvValues" . | nindent 12 -}}
+            {{- include "tenzu-back.emailEnvValues" . | nindent 12 -}}
+            {{- include "tenzu-back.postgresqlEnvValues" . | nindent 12 -}}
+            {{- if not (empty .Values.env )}}
+            {{- toYaml .Values.env | nindent 12 }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: tenzu-secrets
+          {{- if not (empty .Values.envFrom )}}
+          {{- toYaml .Values.envFrom | nindent 12 }}
+          {{- end }}
+          command: ["python"]
+          args:
+            - "manage.py"
+            - "procrastinate"
+            - "worker"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: public
+              mountPath: /code/public/
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: public
+          persistentVolumeClaim:
+            claimName: pvc-{{ .Release.Name }}
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

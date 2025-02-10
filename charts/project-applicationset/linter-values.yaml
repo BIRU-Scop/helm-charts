@@ -1,0 +1,38 @@
+# Name of the project (where all app will be grouped)
+project: example
+# All applications part of the project
+applications:
+  # Definition of a app named toto which be labeled with type app
+  # To chart will be get in (default values): 
+  #  repoUrl : https://gitlab.biru.sh/biru/sre/helm-charts
+  #  path : example/toto
+  # It will be generated for the env staging and production (default)
+  # The target revision changed by env
+  - name: toto
+    type: app
+    envTargetRevision:
+      staging: add_django_app_helm
+      production: production
+  # here the releaseName is override
+  # and the path to get the chart as well 
+  - name: db
+    releaseName: ssss-ENV_NAME
+    path: custom/db
+    type: db
+    targetRevision: versionIWantDB
+  # here the releaseName is override
+  # and the chart getting info as well 
+  - name: db2
+    releaseName: ssss-db-ENV_NAME
+    repoURL: https://ssss.com
+    chart: chart-db
+    type: db
+  # Definition of a app named toto which be labeled with type app
+  # but with the toto-${ENV_NAME} as name of application
+  - name: toto
+    type: app
+    use-app-name: true
+    values:
+      url: https://gitlab.biru.sh/biru/sre/argocd.git
+      files:
+        - $values/values/apps-portal/values-base-production.yaml

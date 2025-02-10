@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ include "tenzu-front.fullname" . }}-config"
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "-1"
+data:
+  config.json: |
+    {
+      "api": {
+        "baseDomain": "{{ .Values.global.tenzu.backendDomain }}",
+        "scheme": "{{ .Values.scheme | default "https" }}"
+      },
+{{- if .Values.sentry.enabled }}
+      "sentry": {
+        "dsn": "{{ .Values.sentry.dsn }}"
+        "environment": "{{ .Values.sentry.environment | default "production" }}"
+      },
+{{- end }}
+      "wsUrl": "wss://{{ .Values.global.tenzu.backendDomain }}/events/"
+    }
+  # config: {{ .Values.config | toJson | quote }}

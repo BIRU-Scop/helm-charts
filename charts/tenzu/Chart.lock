@@ -1,0 +1,15 @@
+dependencies:
+- name: tenzu-back
+  repository: file://../tenzu-back
+  version: 0.1.0
+- name: tenzu-front
+  repository: file://../tenzu-front
+  version: 0.1.0
+- name: redis
+  repository: https://charts.bitnami.com/bitnami/
+  version: 20.2.1
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami/
+  version: 16.3.2
+digest: sha256:f33d30685708166f51493977577b57aa28b04919933f5db60339e24954137612
+generated: "2025-01-14T16:45:02.062544722+01:00"

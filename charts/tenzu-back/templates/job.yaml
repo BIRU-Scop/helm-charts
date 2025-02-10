@@ -1,0 +1,173 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "tenzu-back.fullname" . }}-migrate
+  labels:
+    app.kubernetes.io/component: db
+    job-name: "{{ .Release.Name }}-migrate"
+    {{- include "tenzu-back.labels" . | nindent 4 }}
+  annotations:
+    {{- include "tenzu-back.jobAnnotations" . | nindent 4 }}
+    {{- include "tenzu-back.secretDependenciesAnnotations" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      name: {{ include "tenzu-back.fullname" . }}
+      labels:
+        {{- include "tenzu-back.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Never
+      containers:
+      - name: migrate
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        command: ["./manage.py", "migrate", "--noinput"]
+        env:
+          - name: ALLOWED_HOSTS
+            value: {{ join "," .Values.ingress.hosts }}
+          - name: CSRF_TRUSTED_ORIGINS
+            value: "{{range $i, $v := .Values.ingress.hosts }}{{if $i}},{{end}}https://{{.}}{{end}}"
+          - name: SITE_DOMAIN
+            value: {{ first .Values.ingress.hosts }}
+          {{- include "tenzu-back.sentryEnvValues" . | nindent 10 -}}
+          {{- include "tenzu-back.redisEnvValues" . | nindent 10 -}}
+          {{- include "tenzu-back.postgresqlEnvValues" . | nindent 10 -}}
+          {{- if not (empty .Values.env )}}
+          {{- toYaml .Values.env | nindent 10 }}
+          {{- end }}
+        envFrom:
+          - secretRef:
+              name: tenzu-secrets
+        {{- if not (empty .Values.envFrom )}}
+        {{- toYaml .Values.envFrom | nindent 10 }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+          - name: public
+            mountPath: /code/public/
+      volumes:
+        - name: public
+          persistentVolumeClaim:
+            claimName: pvc-{{ .Release.Name }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "tenzu-back.fullname" . }}-collectstatic
+  labels:
+    app.kubernetes.io/component: db
+    job-name: "{{ .Release.Name }}-collectstatic"
+    {{- include "tenzu-back.labels" . | nindent 4 }}
+  annotations:
+    {{- include "tenzu-back.jobAnnotations" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      name: {{ include "tenzu-back.fullname" . }}
+      labels:
+        {{- include "tenzu-back.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Never
+      containers:
+      - name: collectstatic
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        command: ["./manage.py", "collectstatic", "--noinput"]
+        env:
+          - name: ALLOWED_HOSTS
+            value: {{ join "," .Values.ingress.hosts }}
+          - name: CSRF_TRUSTED_ORIGINS
+            value: "{{range $i, $v := .Values.ingress.hosts }}{{if $i}},{{end}}https://{{.}}{{end}}"
+          - name: SITE_DOMAIN
+            value: {{ first .Values.ingress.hosts }}
+          {{- include "tenzu-back.sentryEnvValues" . | nindent 10 -}}
+          {{- include "tenzu-back.redisEnvValues" . | nindent 10 -}}
+          {{- include "tenzu-back.postgresqlEnvValues" . | nindent 10 -}}
+          {{- if not (empty .Values.env )}}
+          {{- toYaml .Values.env | nindent 10 }}
+          {{- end }}
+        envFrom:
+          - secretRef:
+              name: tenzu-secrets       
+        {{- if not (empty .Values.envFrom )}}
+        {{- toYaml .Values.envFrom | nindent 10 }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+          - name: public
+            mountPath: /code/public/
+      volumes:
+        - name: public
+          persistentVolumeClaim:
+            claimName: pvc-{{ .Release.Name }}
+{{- range $job := .Values.cronJobs }}
+{{- with $ }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "tenzu-back.fullname" . }}-{{ $job.name }}
+  labels:
+    job-name: "{{ $.Release.Name }}-{{ $job.name }}"
+    {{- include "tenzu-back.labels" . | nindent 4 }}
+spec:
+  schedule: {{ $job.schedule }}
+  jobTemplate:
+    metadata:
+      name: {{ include "tenzu-back.fullname" . }}
+      labels:
+        {{- include "tenzu-back.labels" . | nindent 8 }}
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          containers:
+          - name: reset
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            command:
+              {{- toYaml $job.command | nindent 14 }}
+            env:
+              - name: ALLOWED_HOSTS
+                value: {{ join "," .Values.ingress.hosts }}
+              - name: CSRF_TRUSTED_ORIGINS
+                value: "{{range $i, $v := .Values.ingress.hosts }}{{if $i}},{{end}}https://{{.}}{{end}}"
+              - name: SITE_DOMAIN
+                value: {{ first .Values.ingress.hosts }}
+              {{- include "tenzu-back.sentryEnvValues" . | nindent 14 -}}
+              {{- include "tenzu-back.redisEnvValues" . | nindent 14 -}}
+              {{- include "tenzu-back.postgresqlEnvValues" . | nindent 14 -}}
+              {{- if not (empty .Values.env )}}
+              {{- toYaml .Values.env | nindent 14 }}
+              {{- end }}
+            envFrom:
+            - secretRef:
+                name: tenzu-secrets    
+            {{- if not (empty .Values.envFrom )}}  
+            {{- toYaml .Values.envFrom | nindent 14 }}
+            {{- end }}
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            resources:
+              {{- toYaml .Values.resources | nindent 12 }}
+            volumeMounts:
+              - name: public
+                mountPath: /code/public/
+          volumes:
+            - name: public
+              persistentVolumeClaim:
+                claimName: pvc-{{ .Release.Name }}
+{{ end -}}
+{{ end -}}

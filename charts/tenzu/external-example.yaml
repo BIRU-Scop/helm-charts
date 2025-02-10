@@ -1,0 +1,92 @@
+tenzu-back:
+  # Define the ingress value for the backend
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: "nginx"
+      cert-manager.io/cluster-issuer: letsencrypt-production-dns01
+    hosts:
+      - tenzu-api-test.biru.sh
+    tls:
+      - hosts:
+          - tenzu-api-test.biru.sh
+        secretName: tenzu-api-test.biru.sh-tls
+  postgresql:
+    # Host to connect to postgres
+    host: "$APP_NAME-postgres.$NAMESPACE.svc.cluster.local"
+    # Load postgresql credentials from a secret
+    auth:
+      existingSecret: "tenzu-postgresql"
+      usernameKey: "username"
+      passwordKey: "password"
+      databaseKey: "database"
+  redis:
+    # Host to connect to redis
+    host: "$APP_NAME-redis-headless.$NAMESPACE.svc.cluster.local"
+    # Existing secret that contains the password
+    existingSecret: "my-redis-secret"
+    # The key that contains the password
+    passwordKey: "passwordKey"
+  # Email configuration
+  email:
+    # The default from email
+    defaultFrom: "from@mycompany.com"
+    # The host of the email server
+    host: "ssl0.ovh.net"
+    # The user of the email server
+    user: "myUser@mycompany.com"
+    # The password of the email server
+    password: "verySecurePassword"
+    # If the email server uses tls
+    tls: True
+    # If the email server uses ssl
+    ssl: False
+  # The email for the support
+  supportEmail: "ask@tenzu.net"
+  # Enable sentry for the backend
+  sentry:
+    enabled: True
+    dsn: "BackendDSNSentry"
+    environment: "production"
+  # Define the secret key for Django
+  secretKey: "qjiqjhnqijqisjosqjdçj"
+  # Define the Token SigninKey
+  tokensSigningKey: "sjisjisjs,silqjdqj"
+
+
+tenzu-front:
+  # Define the ingress value for the frontend
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: "nginx"
+      cert-manager.io/cluster-issuer: letsencrypt-production-dns01
+    hosts:
+      - host: tenzu-test.biru.sh
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: tenzu-front-test
+              servicePort: 80
+    tls:
+      - hosts:
+          - tenzu-test.biru.sh
+        secretName: tenzu-front-test.biru.sh-tls
+  # Enable sentry for the frontend
+  sentry:
+    enabled: True
+    dsn: "FrontendDSNSentry"
+    environment: "production"
+
+global:
+  # Define the tenzu domains
+  tenzu:
+    frontendDomain: tenzu-test.biru.sh
+    backendDomain: tenzu-api-test.biru.sh
+
+postgresql:
+  enabled: false
+
+redis:
+  enabled: false

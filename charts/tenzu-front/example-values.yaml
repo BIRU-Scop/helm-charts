@@ -1,0 +1,24 @@
+sentry:
+  enabled: true
+  dsn: "https://sentry.example.com"
+  environment: "production"
+
+# Enable ingress configuration
+ingress:
+  enabled: true
+  annotations: 
+    kubernetes.io/ingress.class: "nginx"
+    # use cert-manager to generate the certificate
+    cert-manager.io/cluster-issuer: letsencrypt-production-dns01
+  # The host where will be expose the service
+  hosts:
+    - tenzu-test.domain.org
+  tls:
+    - hosts:
+        - tenzu-test.domain.org
+      secretName: tenzu-test.domain.org-tls
+
+global:
+  tenzu:
+    # Define the domain of backend part to make configuration for the configuration of the frontend
+    backendDomain: tenzu-api-test.domain.org

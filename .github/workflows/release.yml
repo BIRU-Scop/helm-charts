@@ -27,7 +27,10 @@ jobs:
         uses: azure/setup-helm@v4
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
+      - name: add repos
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+  
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         env:
