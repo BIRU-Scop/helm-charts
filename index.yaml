@@ -36,6 +36,31 @@ entries:
   tenzu:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-02-12T14:16:29.30055348Z"
+    dependencies:
+    - name: tenzu-back
+      repository: file://../tenzu-back
+      version: 0.1.2
+    - name: tenzu-front
+      repository: file://../tenzu-front
+      version: 0.1.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami/
+      version: 20.2.1
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami/
+      version: 16.3.2
+    description: A Helm chart for Kubernetes
+    digest: d5bddd2b4f9ee94eea160fd88e034a9ff6a6f4ed7915bd271322137240eca71e
+    name: tenzu
+    type: application
+    urls:
+    - https://github.com/BIRU-Scop/helm-charts/releases/download/tenzu-0.1.3/tenzu-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-02-12T14:00:52.298228107Z"
     dependencies:
     - name: tenzu-back
@@ -186,4 +211,4 @@ entries:
     urls:
     - https://github.com/BIRU-Scop/helm-charts/releases/download/tenzu-front-0.1.0/tenzu-front-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-12T14:12:26.578401818Z"
+generated: "2025-02-12T14:16:29.300586883Z"
