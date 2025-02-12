@@ -218,3 +218,13 @@ Define the frontend and backend url
 - name: TENZU_FRONTEND_URL
   value: {{ printf "https://%s" .Values.global.tenzu.frontendDomain }}
 {{- end }}
+
+{{/*
+Define the tenzu media / static root
+*/}}
+{{- define "tenzu-back.rootMediaStatic" -}}
+- name: TENZU_STATIC_ROOT
+  value: "/code/public/static"
+- name: TENZU_FRONTEND_URL
+  value: "/code/public/media"
+{{- end }}
