@@ -137,6 +137,16 @@ entries:
   tenzu-back:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2025-02-12T14:12:26.578346804Z"
+    description: A Helm chart for Kubernetes
+    digest: 78c7fdc3ee2c5d6ce8ee6bc460916981e029389b798e7e02951d300b36a4c1ba
+    name: tenzu-back
+    type: application
+    urls:
+    - https://github.com/BIRU-Scop/helm-charts/releases/download/tenzu-back-0.1.2/tenzu-back-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2025-02-12T13:57:45.687884021Z"
     description: A Helm chart for Kubernetes
     digest: a45ae40210442f0923be7b66e3a3afda40b6d0746fe912a7ea9cab56dfbc36ef
@@ -176,4 +186,4 @@ entries:
     urls:
     - https://github.com/BIRU-Scop/helm-charts/releases/download/tenzu-front-0.1.0/tenzu-front-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-12T14:00:52.69593237Z"
+generated: "2025-02-12T14:12:26.578401818Z"
