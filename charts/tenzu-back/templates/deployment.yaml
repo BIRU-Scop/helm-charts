@@ -102,6 +102,7 @@ spec:
             {{- include "tenzu-back.redisEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.postgresqlEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.emailEnvValues" . | nindent 12 -}}
+            {{- include "tenzu-back.rootMediaStatic" . | nindent 12 -}}
             {{- if not (empty .Values.env )}}
             {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
@@ -216,6 +217,7 @@ spec:
             {{- include "tenzu-back.redisEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.emailEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.postgresqlEnvValues" . | nindent 12 -}}
+            {{- include "tenzu-back.rootMediaStatic" . | nindent 12 -}}
             {{- if not (empty .Values.env )}}
             {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
