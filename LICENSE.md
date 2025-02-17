@@ -1,5 +1,13 @@
 Copyright (c) BIRU Scop ARL.
 
+Tenzu
+
+Distributed under the following terms:
+
+1. Source code is licensed under the AGPLv3 License.
+2. No rights or licence are hereby granted to use any trademarks of BIRU
+   Scop ARL, even for assets included in this repository (Tenzu logo) see [TRADEMARK.md](TRADEMARK.md).
+
 ---
 
 # GNU AFFERO GENERAL PUBLIC LICENSE
@@ -618,5 +626,3 @@ Program, unless a warranty or assumption of liability accompanies a
 copy of the Program in return for a fee.
 
 END OF TERMS AND CONDITIONS
-
----
