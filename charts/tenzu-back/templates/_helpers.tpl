@@ -107,6 +107,8 @@ Create the sentry env variable
   value: {{ .Values.sentry.dsn }}
 - name: SENTRY_ENVIRONMENT
   value: {{ .Values.sentry.environment }}
+- name: SENTRY_RELEASE
+  value: {{ .Values.image.tag }}
 {{- end }}
 {{- end }}
 
@@ -218,6 +220,7 @@ Define the frontend and backend url
 - name: TENZU_FRONTEND_URL
   value: {{ printf "https://%s" .Values.global.tenzu.frontendDomain }}
 {{- end }}
+
 
 {{/*
 Define the tenzu media / static root

@@ -4,7 +4,16 @@ postgresql:
 redis:
   enabled: true
 
-tenzu-back:  
+tenzu-back:
+  # Configure the pvc specs used for static and media files
+  persistentVolumeClaim:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 10Gi
+  # storageClassName: longhorn
+  
   # Specify redis configuration for backend
   redis:
     # By default we add, health_check_interval: 5 as option
@@ -26,7 +35,8 @@ tenzu-back:
     # Specify your sentry DSN and environment
     # dsn: ""
     # environment: ""
-
+    # the release is linked to the .image.tag
+    
   email:
     # If the email server uses tls
     tls: True
@@ -80,7 +90,6 @@ tenzu-back:
 
 
 tenzu-front:
-  
   # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
   replicaCount: 1
 

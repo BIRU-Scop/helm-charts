@@ -1,7 +1,7 @@
 dependencies:
 - name: tenzu-back
   repository: file://../tenzu-back
-  version: 0.1.2
+  version: 0.1.3
 - name: tenzu-front
   repository: file://../tenzu-front
   version: 0.1.1
@@ -11,5 +11,5 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami/
   version: 16.3.2
-digest: sha256:12e7e222361c11c4db77edca0ebd166a47d0884cd0fb3ba836ea8a44a2a9c51b
-generated: "2025-02-12T15:08:27.966043905+01:00"
+digest: sha256:142d132528fb3f550643b5e70fddaaf652f935028b3bc3f3a8d2867341a0cc93
+generated: "2025-02-20T21:15:58.895628328+01:00"
