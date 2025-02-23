@@ -1,3 +1,7 @@
+# Default values for tenzu.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
 postgresql:
   enabled: true
 
@@ -122,7 +126,7 @@ tenzu-front:
 #   tenzu: 
 #     frontendDomain: tenzu-test.biru.sh
 #     backendDomain: tenzu-api-test.biru.sh
-#   # Define the postgressql credentials in global (will be used by bitnami/postgresql)
+#   # Define the postgresql credentials in global (will be used by bitnami/postgresql)
 #   postgresql:
 #     auth:
 #       username: "tenzu"

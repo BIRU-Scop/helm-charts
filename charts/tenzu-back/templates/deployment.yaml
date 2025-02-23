@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}-caddy
-          image: caddy:2.4.5-alpine
+          image: caddy:2.9-alpine
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -32,6 +32,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: public
+# TODO don't hardcode this path
               mountPath: /code/public/
             - mountPath: /etc/caddy/Caddyfile
               name: config
@@ -89,8 +90,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: SITE_DOMAIN
-              value: {{ .Values.global.tenzu.backendDomain }}
             - name: DJANGO_SETTINGS_MODULE
               value: "configurations.settings"
             - name: TENZU_POD_IP

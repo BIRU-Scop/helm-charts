@@ -26,12 +26,6 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         command: ["./manage.py", "migrate", "--noinput"]
         env:
-          - name: ALLOWED_HOSTS
-            value: {{ join "," .Values.ingress.hosts }}
-          - name: CSRF_TRUSTED_ORIGINS
-            value: "{{range $i, $v := .Values.ingress.hosts }}{{if $i}},{{end}}https://{{.}}{{end}}"
-          - name: SITE_DOMAIN
-            value: {{ first .Values.ingress.hosts }}
           {{- include "tenzu-back.sentryEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.redisEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.postgresqlEnvValues" . | nindent 10 -}}
@@ -83,12 +77,6 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         command: ["./manage.py", "collectstatic", "--noinput"]
         env:
-          - name: ALLOWED_HOSTS
-            value: {{ join "," .Values.ingress.hosts }}
-          - name: CSRF_TRUSTED_ORIGINS
-            value: "{{range $i, $v := .Values.ingress.hosts }}{{if $i}},{{end}}https://{{.}}{{end}}"
-          - name: SITE_DOMAIN
-            value: {{ first .Values.ingress.hosts }}
           {{- include "tenzu-back.sentryEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.redisEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.postgresqlEnvValues" . | nindent 10 -}}
@@ -143,12 +131,6 @@ spec:
             command:
               {{- toYaml $job.command | nindent 14 }}
             env:
-              - name: ALLOWED_HOSTS
-                value: {{ join "," .Values.ingress.hosts }}
-              - name: CSRF_TRUSTED_ORIGINS
-                value: "{{range $i, $v := .Values.ingress.hosts }}{{if $i}},{{end}}https://{{.}}{{end}}"
-              - name: SITE_DOMAIN
-                value: {{ first .Values.ingress.hosts }}
               {{- include "tenzu-back.sentryEnvValues" . | nindent 14 -}}
               {{- include "tenzu-back.redisEnvValues" . | nindent 14 -}}
               {{- include "tenzu-back.postgresqlEnvValues" . | nindent 14 -}}
