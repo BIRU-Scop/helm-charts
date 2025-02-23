@@ -6,5 +6,5 @@ repos:
         args:
           # Make the tool search for charts only under the `charts` directory
           - --chart-search-root=charts
-          # fail on error
-          - -x
+          # preserve the order set in the file instead of default alphabetical order for values
+          - --sort-values-order=file

@@ -24,35 +24,35 @@ postgresql:
   auth:
     # -- (string) existing secret where all necessary value can be found
     existingSecret:
-    # -- (string) key to access value in existingSecret, used to populate TENZU_DB__PASSWORD
+    # -- (string) key to access value in existingSecret, used to populate `TENZU_DB__PASSWORD`
     passwordKey:
-    # -- (string) key to access value in existingSecret, used to populate TENZU_DB__NAME
+    # -- (string) key to access value in existingSecret, used to populate `TENZU_DB__NAME`
     databaseKey:
-    # -- (string) key to access value in existingSecret, used to populate TENZU_DB__USER
+    # -- (string) key to access value in existingSecret, used to populate `TENZU_DB__USER`
     usernameKey:
-    # -- (string) password value, used to populate TENZU_DB__PASSWORD
+    # -- (string) password value, used to populate `TENZU_DB__PASSWORD`
     password:
-    # -- (string) database name value, used to populate TENZU_DB__NAME
+    # -- (string) database name value, used to populate `TENZU_DB__NAME`
     database:
-    # -- (string) username value, used to populate TENZU_DB__USER
+    # -- (string) username value, used to populate `TENZU_DB__USER`
     username:
-  # -- (string) Used to populate TENZU_DB__HOST
+  # -- (string) Used to populate `TENZU_DB__HOST`
   host:
 
 # Specify redis configuration, password can be given directly or through a secret, it can also be defined as a global
 redis:
-  # -- Used to populate TENZU_EVENTS__REDIS_OPTIONS
+  # -- Used to populate `TENZU_EVENTS__REDIS_OPTIONS`
   options: '{"health_check_interval": 5}'
-  # -- (string) Used to populate TENZU_EVENTS__REDIS_HOST
+  # -- (string) Used to populate `TENZU_EVENTS__REDIS_HOST`
   # could be something like "tenzu-redis-headless.tenzu.svc.cluster.local"
   host:
-  # -- (string) Used to populate TENZU_EVENTS__REDIS_PASSWORD
+  # -- (string) Used to populate `TENZU_EVENTS__REDIS_PASSWORD`
   # using the passed value directly
   password:
-  # -- (string) Used to populate TENZU_EVENTS__REDIS_PASSWORD
+  # -- (string) Used to populate `TENZU_EVENTS__REDIS_PASSWORD`
   # If you want to use an existing secret for the password instead
   existingSecret:
-  # -- (string) Used to populate TENZU_EVENTS__REDIS_PASSWORD
+  # -- (string) Used to populate `TENZU_EVENTS__REDIS_PASSWORD`
   # If you use redis.existingSecret, you must set this key to the corresponding value to use in the secret
   passwordKey:
 
@@ -64,9 +64,9 @@ sentry:
   # -- (string) Used to populate SENTRY_ENVIRONMENT, SENTRY_RELEASE will be set using the image.tag value
   environment:
 
-# -- Used to populate TENZU_SECRET_KEY
+# -- Used to populate `TENZU_SECRET_KEY`
 secretKey:
-# -- Used to populate TENZU_TOKENS__SIGNING_KEY
+# -- Used to populate `TENZU_TOKENS__SIGNING_KEY`
 tokenSigningKey:
 
 # -- additionnal environment variable to set on every jobs and on the backend and task queue Deployment objects.
@@ -76,21 +76,21 @@ env: []
 envFrom: []
 
 email:
-  # -- Used to populate TENZU_EMAIL__EMAIL_USE_TLS
+  # -- Used to populate `TENZU_EMAIL__EMAIL_USE_TLS`
   tls: True
-  # -- Used to populate TENZU_EMAIL__EMAIL_USE_SSL
+  # -- Used to populate `TENZU_EMAIL__EMAIL_USE_SSL`
   ssl: False
-  # -- Used to populate TENZU_EMAIL__EMAIL_PORT
+  # -- Used to populate `TENZU_EMAIL__EMAIL_PORT`
   port: 547
-  # -- (string) Used to populate TENZU_EMAIL__DEFAULT_FROM_EMAIL
+  # -- (string) Used to populate `TENZU_EMAIL__DEFAULT_FROM_EMAIL`
   defaultFrom:
-  # -- (string) Used to populate TENZU_EMAIL__EMAIL_HOST
+  # -- (string) Used to populate `TENZU_EMAIL__EMAIL_HOST`
   host:
-  # -- (string) Used to populate TENZU_EMAIL__EMAIL_HOST_USER
+  # -- (string) Used to populate `TENZU_EMAIL__EMAIL_HOST_USER`
   user:
-  # -- (string) Used to populate TENZU_EMAIL__EMAIL_HOST_PASSWORD
+  # -- (string) Used to populate `TENZU_EMAIL__EMAIL_HOST_PASSWORD`
   password:
-  # -- (string) Used to populate TENZU_SUPPORT_EMAIL
+  # -- (string) Used to populate `TENZU_SUPPORT_EMAIL`
   supportEmail:
 
 # -- Image to use for the application
@@ -210,21 +210,21 @@ volumeMounts: []
 
 # -- global values to share properties among charts.
 global:
-  # -- (string) redis.password will be used to set TENZU_EVENTS__REDIS_PASSWORD if defined
+  # -- (object) redis.password will be used to set `TENZU_EVENTS__REDIS_PASSWORD` if defined
   # You still need to define redis.host as a local value.
   # Useful if you're using bitnami/redis as this value will also be used
   redis:
   # -- (object) The expected global value for postgres is an object formatted like
   # {auth: {password: string, username: string, database: string}}
-  #  in order to set respectively TENZU_DB__PASSWORD, TENZU_DB__USER and TENZU_DB__NAME.
+  #  in order to set respectively `TENZU_DB__PASSWORD`, `TENZU_DB__USER` and `TENZU_DB__NAME`.
   # You still need to define postgres.host as a local value.
   # Useful if you're using bitnami/postgresql as this value will also be used
   postgresql:
   # -- (string) host for the backend, domain only without protocol,
-  # Will be used to set TENZU_BACKEND_URL
+  # Will be used to set `TENZU_BACKEND_URL`
   # If exposed via ingress, it should be the same as the ingress domain
   backendDomain:
   # -- (string) host for the backend, domain only without protocol,
-  # Will be used to set TENZU_FRONTEND_URL
+  # Will be used to set `TENZU_FRONTEND_URL`
   # If exposed via ingress, it should be the same as the ingress domain
   frontendDomain:

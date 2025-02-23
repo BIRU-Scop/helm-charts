@@ -1,6 +1,6 @@
 apiVersion: v2
 name: tenzu-front
-description: A Helm chart for Kubernetes
+description: A Helm chart to run the SPA frontend of Tenzu
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -21,4 +21,6 @@ version: 0.1.1
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "v0-1-0-demo-13-early"
+appVersion: "latest"
+
+home: "https://tenzu.net/docs"
