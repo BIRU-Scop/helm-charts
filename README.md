@@ -26,7 +26,7 @@ To keep up-to-date with all that is happening around Tenzu, join our [Community]
 
 ## Making contribution
 
-We are not yet ready to receive source code contribution, please see [our Contribution policy](CONTRIBUTING.md).
+Please read [our Contribution policy](CONTRIBUTING.md) if you're having problem with the provided charts or want to contribute.
 
 ## Code of Conduct
 
