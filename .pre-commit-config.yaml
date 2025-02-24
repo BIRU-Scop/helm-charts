@@ -8,3 +8,4 @@ repos:
           - --chart-search-root=charts
           # preserve the order set in the file instead of default alphabetical order for values
           - --sort-values-order=file
+          - --document-dependency-values=true

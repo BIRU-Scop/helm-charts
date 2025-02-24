@@ -242,9 +242,9 @@ Define the frontend and backend url
 */}}
 {{- define "tenzu-back.urls" -}}
 - name: TENZU_BACKEND_URL
-  value: {{ printf "https://%s" .Values.global.tenzu.backendDomain }}
+  value: {{ printf "%s://%s" .Values.global.tenzu.backendUrl.scheme .Values.global.tenzu.backendUrl.host }}
 - name: TENZU_FRONTEND_URL
-  value: {{ printf "https://%s" .Values.global.tenzu.frontendDomain }}
+  value: {{ printf "%s://%s" .Values.global.tenzu.frontendUrl.scheme .Values.global.tenzu.frontendUrl.host }}
 {{- end }}
 
 

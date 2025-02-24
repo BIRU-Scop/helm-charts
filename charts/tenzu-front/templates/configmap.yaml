@@ -10,8 +10,8 @@ data:
   config.json: |
     {
       "api": {
-        "baseDomain": "{{ .Values.global.tenzu.backendDomain }}",
-        "scheme": "{{ .Values.scheme | default "https" }}"
+        "baseDomain": "{{ .Values.global.tenzu.backendUrl.host }}",
+        "scheme": "{{ .Values.tenzu.backendUrl.scheme }}"
       },
 {{- if .Values.sentry.enabled }}
       "sentry": {
@@ -19,6 +19,5 @@ data:
         "environment": "{{ .Values.sentry.environment | default "production" }}"
       },
 {{- end }}
-      "wsUrl": "wss://{{ .Values.global.tenzu.backendDomain }}/events/"
+      "wsUrl": "{{ .Values.tenzu.backendUrl.websocketScheme }}://{{ .Values.global.tenzu.backendUrl.host }}/events/"
     }
-  # config: {{ .Values.config | toJson | quote }}

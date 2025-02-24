@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 # -- number of pod replicas for the api backend and the worker service if not using autoscaling
+# see: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
 
 # Number of replicas for the reverse proxy deployment
@@ -17,51 +18,13 @@ workersTimeout: 120
 # -- level of log produced by gunicorn
 logLevel: "warning"
 
-postgresql:
-  # -- To configure the postgresql connexion you can use global or local values.
-  # Local values can use an existing secret, direct values or a mix of both
-  # Only use on method for each expected value
-  auth:
-    # -- (string) existing secret where all necessary value can be found
-    existingSecret:
-    # -- (string) key to access value in existingSecret, used to populate `TENZU_DB__PASSWORD`
-    passwordKey:
-    # -- (string) key to access value in existingSecret, used to populate `TENZU_DB__NAME`
-    databaseKey:
-    # -- (string) key to access value in existingSecret, used to populate `TENZU_DB__USER`
-    usernameKey:
-    # -- (string) password value, used to populate `TENZU_DB__PASSWORD`
-    password:
-    # -- (string) database name value, used to populate `TENZU_DB__NAME`
-    database:
-    # -- (string) username value, used to populate `TENZU_DB__USER`
-    username:
-  # -- (string) Used to populate `TENZU_DB__HOST`
-  host:
-
-# Specify redis configuration, password can be given directly or through a secret, it can also be defined as a global
-redis:
-  # -- Used to populate `TENZU_EVENTS__REDIS_OPTIONS`
-  options: '{"health_check_interval": 5}'
-  # -- (string) Used to populate `TENZU_EVENTS__REDIS_HOST`
-  # could be something like "tenzu-redis-headless.tenzu.svc.cluster.local"
-  host:
-  # -- (string) Used to populate `TENZU_EVENTS__REDIS_PASSWORD`
-  # using the passed value directly
-  password:
-  # -- (string) Used to populate `TENZU_EVENTS__REDIS_PASSWORD`
-  # If you want to use an existing secret for the password instead
-  existingSecret:
-  # -- (string) Used to populate `TENZU_EVENTS__REDIS_PASSWORD`
-  # If you use redis.existingSecret, you must set this key to the corresponding value to use in the secret
-  passwordKey:
-
 sentry:
   # -- Whether to set the environment variable expected by the error tracker
   enabled: False
   # -- (string) Used to populate SENTRY_DSN
   dsn:
-  # -- (string) Used to populate SENTRY_ENVIRONMENT, SENTRY_RELEASE will be set using the image.tag value
+  # -- (string) Used to populate SENTRY_ENVIRONMENT,
+  # SENTRY_RELEASE will be set using the image.tag value
   environment:
 
 # -- Used to populate `TENZU_SECRET_KEY`
@@ -94,6 +57,7 @@ email:
   supportEmail:
 
 # -- Image to use for the application
+# see: https://kubernetes.io/docs/concepts/containers/images/
 image:
   repository: ghcr.io/biru-scop/tenzu-back
   pullPolicy: IfNotPresent
@@ -101,8 +65,8 @@ image:
   # @default -- Uses the .Chart.AppVersion if not set
   tag: latest
 
-# -- List of secrets needed to pull an image from a private repository
-# (see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+# -- (list) List of secrets needed to pull an image from a private repository
+# see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets:
 
 # -- Used by name template: to fill the app.kubernetes.io/name label
@@ -125,14 +89,17 @@ serviceAccount:
   name: ""
 
 # -- Extra annotation to put on backend and task queue Deployment objects
+# see: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
 # -- Extra labels to put on backend and task queue Deployment objects
+# see: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 # -- definition of the pod level securityContext on backend and task queue Deployment objects
 podSecurityContext: {}
 # -- definition of the container level securityContext on backend and task queue Deployment objects
 securityContext: {}
 
+# -- see: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
   # -- service type defined for the backend and the reverse proxy
   type: ClusterIP
@@ -140,35 +107,39 @@ service:
   port: 8000
 
 # -- properties used to define an Ingress
+# see: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
   enabled: false
   # -- will be used to set ingressClassName and "kubernetes.io/ingress.class" annotation depending on k8s version
   className: ""
-  # -- ingress annotations, can be "kubernetes.io/ingress.class", "cert-manager.io/cluster-issuer", etc.
+  # -- ingress annotations, can be "kubernetes.io/ingress.class", "kubernetes.io/tls-acme", "cert-manager.io/cluster-issuer", etc.
   # @default -- Will set kubernetes.io/ingress.class to ingress.className if needed
   annotations: {}
-  # -- list of the hosts that will be exposed to access the reverse proxy service
+  # -- list of the hosts that will be exposed
   hosts: []
   # -- Expect values in format {secretName: "", hosts: []},
-  # You must define tls for the host used as backendDomain if it is present in "ingress.hosts"
-  # since we expect HTTPS with the way tenzu-back.urls are defined
+  # If one of the domain in `ingress.hosts` is also defined as `global.backendUrl/frontendUrl.host`
+  # You must take care to define tls for it if you also set `global.backendUrl/frontendUrl.scheme` to "https"
   tls: []
 
 # -- container's resources definition set on every jobs and on the backend and task queue Deployment objects,
-# If you want to set it, use the following format: {limits: {cpu: 100m, memory: 128Mi}, requests: cpu: 100m, memory: 128Mi}}
+# If you want to set it, use the following format: `{limits: {cpu: 100m, memory: 128Mi}, requests: cpu: 100m, memory: 128Mi}}`
 resources: {}
 
 # -- livenessProbe for the container of the backend service
+# see: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
   httpGet:
     path: /api/v1/healthcheck
     port: 8000
 # -- readinessProbe for the container of the backend service
+# see: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 readinessProbe: 
   httpGet:
     path: /api/v1/healthcheck
     port: 8000
 # -- Whether to define a HorizontalPodAutoscaler with the following scaling properties on cpu and memory consumption
+# see: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -208,6 +179,46 @@ volumeMounts: []
 #   mountPath: "/etc/foo"
 #   readOnly: true
 
+postgresql:
+  # -- To configure the postgresql connexion you can use global or local values.
+  # Local values can use an existing secret, direct values or a mix of both
+  # Only use on method for each expected value
+  auth:
+    # -- (string) existing secret where all necessary value can be found
+    existingSecret:
+    # -- (string) key to access value in existingSecret, used to populate `TENZU_DB__PASSWORD`
+    passwordKey:
+    # -- (string) key to access value in existingSecret, used to populate `TENZU_DB__NAME`
+    databaseKey:
+    # -- (string) key to access value in existingSecret, used to populate `TENZU_DB__USER`
+    usernameKey:
+    # -- (string) password value, used to populate `TENZU_DB__PASSWORD`
+    password:
+    # -- (string) database name value, used to populate `TENZU_DB__NAME`
+    database:
+    # -- (string) username value, used to populate `TENZU_DB__USER`
+    username:
+  # -- (string) Used to populate `TENZU_DB__HOST`
+  # It can be something like tenzu-postgres.$NAMESPACE.svc.cluster.local
+  host:
+
+# Specify redis configuration, password can be given directly or through a secret, it can also be defined as a global
+redis:
+  # -- Used to populate `TENZU_EVENTS__REDIS_OPTIONS`
+  options: '{"health_check_interval": 5}'
+  # -- (string) Used to populate `TENZU_EVENTS__REDIS_HOST`
+  # It can be something like "tenzu-redis-headless.$NAMESPACE.svc.cluster.local"
+  host:
+  # -- (string) Used to populate `TENZU_EVENTS__REDIS_PASSWORD`
+  # using the passed value directly
+  password:
+  # -- (string) Used to populate `TENZU_EVENTS__REDIS_PASSWORD`
+  # If you want to use an existing secret for the password instead
+  existingSecret:
+  # -- (string) Used to populate `TENZU_EVENTS__REDIS_PASSWORD`
+  # If you use redis.existingSecret, you must set this key to the corresponding value to use in the secret
+  passwordKey:
+
 # -- global values to share properties among charts.
 global:
   # -- (object) redis.password will be used to set `TENZU_EVENTS__REDIS_PASSWORD` if defined
@@ -220,11 +231,17 @@ global:
   # You still need to define postgres.host as a local value.
   # Useful if you're using bitnami/postgresql as this value will also be used
   postgresql:
-  # -- (string) host for the backend, domain only without protocol,
-  # Will be used to set `TENZU_BACKEND_URL`
-  # If exposed via ingress, it should be the same as the ingress domain
-  backendDomain:
-  # -- (string) host for the backend, domain only without protocol,
-  # Will be used to set `TENZU_FRONTEND_URL`
-  # If exposed via ingress, it should be the same as the ingress domain
-  frontendDomain:
+  # -- url used to serve the backend, will be used to set `TENZU_BACKEND_URL`
+  # If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls
+  backendUrl:
+    scheme: 'https'
+    websocketScheme: 'wss'
+    # -- (string)
+    host:
+
+  # -- url used to serve the frontend, will be used to set `TENZU_FRONTEND_URL`
+  # If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls
+  frontendUrl:
+    scheme: 'https'
+    # -- (string)
+    host:
