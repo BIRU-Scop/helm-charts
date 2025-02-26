@@ -14,6 +14,8 @@ A Helm chart to run the SPA frontend of Tenzu
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| nameOverride | string | will use .Chart.Name | Used by name template: to fill the app.kubernetes.io/name label |
+| fullnameOverride | string | will use .Release.Name suffixed with name template, if .Release.Name does not already contains it | Used by fullname template: to fill the name of all created kubernetes component |
 | replicaCount | int | `1` | number of pod replicas for the api backend and the worker service if not using autoscaling see: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/ |
 | sentry.enabled | bool | `false` | Whether to set the environment variable expected by the error tracker |
 | sentry.dsn | string | `nil` | Used to populate json config `sentry.dsn` |
@@ -21,8 +23,6 @@ A Helm chart to run the SPA frontend of Tenzu
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/biru-scop/tenzu-back","tag":"latest"}` | Image to use for the application see: https://kubernetes.io/docs/concepts/containers/images/ |
 | image.tag | string | Uses the .Chart.AppVersion if not set | Overrides the image tag |
 | imagePullSecrets | list | `nil` | List of secrets needed to pull an image from a private repository see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ |
-| nameOverride | string | will use .Chart.Name | Used by name template: to fill the app.kubernetes.io/name label |
-| fullnameOverride | string | will use .Release.Name suffixed with name template, if .Release.Name does not already contains it | Used by fullname template: to fill the name of all created kubernetes component |
 | serviceAccount | object | `{"annotations":{},"automount":true,"create":true,"name":""}` | service account properties |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
 | serviceAccount.automount | bool | `true` | Automatically mount a ServiceAccount's API credentials |

@@ -30,6 +30,8 @@ A Helm chart to run the full Tenzu web application
 | global.frontendUrl | object | `{"host":null,"scheme":"https"}` | url used to serve the frontend, will be used to set `TENZU_FRONTEND_URL` If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls |
 | postgresql.enabled | bool | `true` | Whether to enable bitnami provided postgresql chart as a dependency If you do, fill the postgresql parameters in global key so it can also be used by tenzu-back |
 | redis.enabled | bool | `true` | Whether to enable bitnami provided redis chart as a dependency If you do, fill the redis parameters in global key so it can also be used by tenzu-back |
+| tenzu-back.nameOverride | string | will use .Chart.Name | Used by name template: to fill the app.kubernetes.io/name label |
+| tenzu-back.fullnameOverride | string | will use .Release.Name suffixed with name template, if .Release.Name does not already contains it | Used by fullname template: to fill the name of all created kubernetes component |
 | tenzu-back.replicaCount | int | `1` | number of pod replicas for the api backend and the worker service if not using autoscaling see: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/ |
 | tenzu-back.caddy.replicas | int | `1` |  |
 | tenzu-back.workersQuantity | int | `1` | number workers started by gunicorn |
@@ -53,8 +55,6 @@ A Helm chart to run the full Tenzu web application
 | tenzu-back.image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/biru-scop/tenzu-back","tag":"latest"}` | Image to use for the application see: https://kubernetes.io/docs/concepts/containers/images/ |
 | tenzu-back.image.tag | string | Uses the .Chart.AppVersion if not set | Overrides the image tag |
 | tenzu-back.imagePullSecrets | list | `nil` | List of secrets needed to pull an image from a private repository see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ |
-| tenzu-back.nameOverride | string | will use .Chart.Name | Used by name template: to fill the app.kubernetes.io/name label |
-| tenzu-back.fullnameOverride | string | will use .Release.Name suffixed with name template, if .Release.Name does not already contains it | Used by fullname template: to fill the name of all created kubernetes component |
 | tenzu-back.serviceAccount | object | `{"annotations":{},"automount":true,"create":true,"name":""}` | service account properties |
 | tenzu-back.serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
 | tenzu-back.serviceAccount.automount | bool | `true` | Automatically mount a ServiceAccount's API credentials |
@@ -98,6 +98,8 @@ A Helm chart to run the full Tenzu web application
 | tenzu-back.redis.password | string | `nil` | Used to populate `TENZU_EVENTS__REDIS_PASSWORD` using the passed value directly |
 | tenzu-back.redis.existingSecret | string | `nil` | Used to populate `TENZU_EVENTS__REDIS_PASSWORD` If you want to use an existing secret for the password instead |
 | tenzu-back.redis.passwordKey | string | `nil` | Used to populate `TENZU_EVENTS__REDIS_PASSWORD` If you use redis.existingSecret, you must set this key to the corresponding value to use in the secret |
+| tenzu-front.nameOverride | string | will use .Chart.Name | Used by name template: to fill the app.kubernetes.io/name label |
+| tenzu-front.fullnameOverride | string | will use .Release.Name suffixed with name template, if .Release.Name does not already contains it | Used by fullname template: to fill the name of all created kubernetes component |
 | tenzu-front.replicaCount | int | `1` | number of pod replicas for the api backend and the worker service if not using autoscaling see: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/ |
 | tenzu-front.sentry.enabled | bool | `false` | Whether to set the environment variable expected by the error tracker |
 | tenzu-front.sentry.dsn | string | `nil` | Used to populate json config `sentry.dsn` |
@@ -105,8 +107,6 @@ A Helm chart to run the full Tenzu web application
 | tenzu-front.image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/biru-scop/tenzu-back","tag":"latest"}` | Image to use for the application see: https://kubernetes.io/docs/concepts/containers/images/ |
 | tenzu-front.image.tag | string | Uses the .Chart.AppVersion if not set | Overrides the image tag |
 | tenzu-front.imagePullSecrets | list | `nil` | List of secrets needed to pull an image from a private repository see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ |
-| tenzu-front.nameOverride | string | will use .Chart.Name | Used by name template: to fill the app.kubernetes.io/name label |
-| tenzu-front.fullnameOverride | string | will use .Release.Name suffixed with name template, if .Release.Name does not already contains it | Used by fullname template: to fill the name of all created kubernetes component |
 | tenzu-front.serviceAccount | object | `{"annotations":{},"automount":true,"create":true,"name":""}` | service account properties |
 | tenzu-front.serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
 | tenzu-front.serviceAccount.automount | bool | `true` | Automatically mount a ServiceAccount's API credentials |

@@ -206,7 +206,7 @@ Create the email env variable
 */}}
 {{- define "tenzu-back.emailEnvValues" -}}
 - name: TENZU_SUPPORT_EMAIL
-  value: {{ .Values.supportEmail }}
+  value: {{ .Values.email.supportEmail }}
 - name: TENZU_EMAIL__EMAIL_BACKEND
   value: "django.core.mail.backends.smtp.EmailBackend"
 - name: TENZU_EMAIL__DEFAULT_FROM_EMAIL

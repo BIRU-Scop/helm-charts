@@ -2,6 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# -- Used by name template: to fill the app.kubernetes.io/name label
+# @default -- will use .Chart.Name
+nameOverride: ""
+# -- Used by fullname template: to fill the name of all created kubernetes component
+# @default -- will use .Release.Name suffixed with name template, if .Release.Name does not already contains it
+fullnameOverride: ""
+
 # -- number of pod replicas for the api backend and the worker service if not using autoscaling
 # see: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
@@ -68,13 +75,6 @@ image:
 # -- (list) List of secrets needed to pull an image from a private repository
 # see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets:
-
-# -- Used by name template: to fill the app.kubernetes.io/name label
-# @default -- will use .Chart.Name
-nameOverride: ""
-# -- Used by fullname template: to fill the name of all created kubernetes component
-# @default -- will use .Release.Name suffixed with name template, if .Release.Name does not already contains it
-fullnameOverride: ""
 
 # -- service account properties
 serviceAccount:
