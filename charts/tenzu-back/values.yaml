@@ -158,6 +158,7 @@ affinity: {}
 # schedule and command should be set to the format expected by CronJob (see: https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
 cronJobs: []
 
+
 persistentVolumeClaim:
   # -- Spec of the PersistentVolumeClaim used by the volume for public files
   public:
