@@ -13,6 +13,7 @@ We are very active there and you'll be able to receive news about our progress!
 
 - Always keep the documentation in sync with the change you have made.
 - Please provide enough context and information to understand the change you are proposing (except if it is sufficiently self-explanatory)
+- Don't forget to update charts version and run `helm dependency update charts/tenzu` if you make any change to `tenzu-back` and/or `tenzu-front`
 
 ## Prerequisite
 We use [helm-docs](https://github.com/norwoodj/helm-docs) to automatically generate the readme of our charts.
@@ -23,7 +24,6 @@ Ensure you have precommit installed (we recommend using `brew install pre-commit
 and then run `pre-commit install` once, inside the repository, before making any commit.
 
 Always check the generated changes in the READMEs afterward.
-
 
 # Community
 We are very active at our [community website](https://community.tenzu.net) and always happy to get in 
