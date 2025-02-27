@@ -32,15 +32,14 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: public
-# TODO don't hardcode this path
-              mountPath: /code/public/
+              mountPath: /public/
             - mountPath: /etc/caddy/Caddyfile
               name: config
               subPath: Caddyfile
       volumes:
         - name: public
           persistentVolumeClaim:
-            claimName: pvc-{{ .Release.Name }}
+            claimName: pvc-{{ .Release.Name }}-public
         - name: config
           configMap:
             name: "{{ include "tenzu-back.fullname" . }}-caddy-config"
@@ -101,7 +100,6 @@ spec:
             {{- include "tenzu-back.redisEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.postgresqlEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.emailEnvValues" . | nindent 12 -}}
-            {{- include "tenzu-back.rootMediaStatic" . | nindent 12 -}}
             {{- if not (empty .Values.env )}}
             {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
@@ -142,14 +140,14 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           volumeMounts:
             - name: public
-              mountPath: /code/public/
+              mountPath: /public/
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
         - name: public
           persistentVolumeClaim:
-            claimName: pvc-{{ .Release.Name }}
+            claimName: pvc-{{ .Release.Name }}-public
       {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -216,7 +214,6 @@ spec:
             {{- include "tenzu-back.redisEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.emailEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.postgresqlEnvValues" . | nindent 12 -}}
-            {{- include "tenzu-back.rootMediaStatic" . | nindent 12 -}}
             {{- if not (empty .Values.env )}}
             {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
@@ -235,14 +232,14 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: public
-              mountPath: /code/public/
+              mountPath: /public/
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
         - name: public
           persistentVolumeClaim:
-            claimName: pvc-{{ .Release.Name }}
+            claimName: pvc-{{ .Release.Name }}-public
       {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

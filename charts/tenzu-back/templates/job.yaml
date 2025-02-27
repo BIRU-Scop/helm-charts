@@ -29,7 +29,6 @@ spec:
           {{- include "tenzu-back.sentryEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.redisEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.postgresqlEnvValues" . | nindent 10 -}}
-          {{- include "tenzu-back.rootMediaStatic" . | nindent 10 -}}
           {{- if not (empty .Values.env )}}
           {{- toYaml .Values.env | nindent 10 }}
           {{- end }}
@@ -44,11 +43,11 @@ spec:
           {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
           - name: public
-            mountPath: /code/public/
+            mountPath: /public/
       volumes:
         - name: public
           persistentVolumeClaim:
-            claimName: pvc-{{ .Release.Name }}
+            claimName: pvc-{{ .Release.Name }}-public
 ---
 apiVersion: batch/v1
 kind: Job
@@ -80,7 +79,6 @@ spec:
           {{- include "tenzu-back.sentryEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.redisEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.postgresqlEnvValues" . | nindent 10 -}}
-          {{- include "tenzu-back.rootMediaStatic" . | nindent 10 -}}
           {{- if not (empty .Values.env )}}
           {{- toYaml .Values.env | nindent 10 }}
           {{- end }}
@@ -95,11 +93,11 @@ spec:
           {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
           - name: public
-            mountPath: /code/public/
+            mountPath: /public/
       volumes:
         - name: public
           persistentVolumeClaim:
-            claimName: pvc-{{ .Release.Name }}
+            claimName: pvc-{{ .Release.Name }}-public
 {{- range $job := .Values.cronJobs }}
 {{- with $ }}
 ---
@@ -134,7 +132,6 @@ spec:
               {{- include "tenzu-back.sentryEnvValues" . | nindent 14 -}}
               {{- include "tenzu-back.redisEnvValues" . | nindent 14 -}}
               {{- include "tenzu-back.postgresqlEnvValues" . | nindent 14 -}}
-              {{- include "tenzu-back.rootMediaStatic" . | nindent 14 -}}
               {{- if not (empty .Values.env )}}
               {{- toYaml .Values.env | nindent 14 }}
               {{- end }}
@@ -149,10 +146,10 @@ spec:
               {{- toYaml .Values.resources | nindent 12 }}
             volumeMounts:
               - name: public
-                mountPath: /code/public/
+                mountPath: /public/
           volumes:
             - name: public
               persistentVolumeClaim:
-                claimName: pvc-{{ .Release.Name }}
+                claimName: pvc-{{ .Release.Name }}-public
 {{ end -}}
 {{ end -}}

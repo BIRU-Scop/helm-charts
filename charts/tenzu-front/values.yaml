@@ -9,7 +9,7 @@ nameOverride: ""
 # @default -- will use .Release.Name suffixed with name template, if .Release.Name does not already contains it
 fullnameOverride: ""
 
-# -- number of pod replicas for the api backend and the worker service if not using autoscaling
+# -- number of pod replicas for the frontend Deployment if not using autoscaling
 # see: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
 
@@ -47,15 +47,15 @@ serviceAccount:
   # @default -- If create is true, a name is generated using the fullname template, else it will be set to "default"
   name: ""
 
-# -- Extra annotation to put on backend and task queue Deployment objects
+# -- Extra annotation to put on frontend Deployment object
 # see: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
-# -- Extra labels to put on backend and task queue Deployment objects
+# -- Extra labels to put on frontend Deployment object
 # see: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
-# -- definition of the pod level securityContext on backend and task queue Deployment objects
+# -- definition of the pod level securityContext on frontend Deployment object
 podSecurityContext: {}
-# -- definition of the container level securityContext on backend and task queue Deployment objects
+# -- definition of the container level securityContext on frontend Deployment object
 securityContext: {}
 
 # -- see: https://kubernetes.io/docs/concepts/services-networking/service/
@@ -81,18 +81,18 @@ ingress:
   # You must take care to define tls for it if you also set `global.backendUrl.scheme` to "https"
   tls: []
 
-# -- container's resources definition set on every jobs and on the backend and task queue Deployment objects,
+# -- container's resources definition set on every jobs and on the frontend Deployment object,
 # If you want to set it, use the following format: `{limits: {cpu: 100m, memory: 128Mi}, requests: cpu: 100m, memory: 128Mi}}`
 resources: {}
 
 
-# -- livenessProbe for the container of the backend service
+# -- livenessProbe for the container of the frontend service
 # see: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
   httpGet:
     path: /
     port: http
-# -- readinessProbe for the container of the backend service
+# -- readinessProbe for the container of the frontend service
 # see: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 readinessProbe:
   httpGet:
@@ -107,25 +107,17 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
-# -- nodeSelector pod property for the backend and task queue Deployment objects
+# -- nodeSelector pod property for the frontend Deployment object
 nodeSelector: {}
-# -- tolerations pod property for the backend and task queue Deployment objects
+# -- tolerations pod property for the frontend Deployment object
 tolerations: []
-# -- affinity pod property for the backend and task queue Deployment objects
+# -- affinity pod property for the frontend Deployment object
 affinity: {}
 
-# TODO fix all values related to volumes and document explicit usage
-# Additional volumes on the output Deployment definition.
+# -- Additional volumes for the frontend Deployment object
 volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
-# Additional volumeMounts on the output Deployment definition.
+# -- Additional volumeMounts for the frontend Deployment object
 volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
 
 # -- global values to share properties among charts.
 global:

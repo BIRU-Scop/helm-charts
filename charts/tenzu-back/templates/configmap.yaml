@@ -29,8 +29,7 @@ data:
               header Access-Control-Allow-Headers *
               header Access-Control-Allow-Methods *
               header Cache-Control 3600
-# TODO don't hardcode this path
-              root * /code/public/
+              root * /public/
               encode gzip
               file_server {
                   precompressed br gzip

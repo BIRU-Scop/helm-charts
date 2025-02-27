@@ -158,26 +158,20 @@ affinity: {}
 # schedule and command should be set to the format expected by CronJob (see: https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
 cronJobs: []
 
-# TODO fix all values related to volumes and document explicit usage
 persistentVolumeClaim:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      # Change with the size you need
-      storage: 10Gi
-  # storageClassName: longhorn
-# Additional volumes on the output Deployment definition.
+  # -- Spec of the PersistentVolumeClaim used by the volume for public files
+  public:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        # -- Storage size for the PersistentVolumeClaim used by the volume for public files,
+        # change the capacity to what you need
+        storage: 10Gi
+# -- Additional volumes for the backend and task queue Deployment objects
 volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
-# Additional volumeMounts on the output Deployment definition.
+# -- Additional volumeMounts for the backend and task queue Deployment objects
 volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
 
 postgresql:
   # -- To configure the postgresql connexion you can use global or local values.

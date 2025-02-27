@@ -2,6 +2,6 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-{{ .Release.Name }}
+  name: pvc-{{ .Release.Name }}-public
 spec:
-  {{- .Values.persistentVolumeClaim | toYaml | nindent 2 }}
+  {{- .Values.persistentVolumeClaim.public | toYaml | nindent 2 }}

@@ -64,10 +64,10 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | tolerations | list | `[]` | tolerations pod property for the backend and task queue Deployment objects |
 | affinity | object | `{}` | affinity pod property for the backend and task queue Deployment objects |
 | cronJobs | list | `[]` | list of object in format {name: string, schedule: string, command: string[]} schedule and command should be set to the format expected by CronJob (see: https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) |
-| persistentVolumeClaim.accessModes[0] | string | `"ReadWriteMany"` |  |
-| persistentVolumeClaim.resources.requests.storage | string | `"10Gi"` |  |
-| volumes | list | `[]` |  |
-| volumeMounts | list | `[]` |  |
+| persistentVolumeClaim.public | object | `{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"10Gi"}}}` | Spec of the PersistentVolumeClaim used by the volume for public files |
+| persistentVolumeClaim.public.resources.requests.storage | string | `"10Gi"` | Storage size for the PersistentVolumeClaim used by the volume for public files, change the capacity to what you need |
+| volumes | list | `[]` | Additional volumes for the backend and task queue Deployment objects |
+| volumeMounts | list | `[]` | Additional volumeMounts for the backend and task queue Deployment objects |
 | postgresql.auth | object | `{"database":null,"databaseKey":null,"existingSecret":null,"password":null,"passwordKey":null,"username":null,"usernameKey":null}` | To configure the postgresql connexion you can use global or local values. Local values can use an existing secret, direct values or a mix of both Only use on method for each expected value |
 | postgresql.auth.existingSecret | string | `nil` | existing secret where all necessary value can be found |
 | postgresql.auth.passwordKey | string | `nil` | key to access value in existingSecret, used to populate `TENZU_DB__PASSWORD` |
