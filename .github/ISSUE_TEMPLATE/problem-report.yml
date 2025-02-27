@@ -1,0 +1,48 @@
+description: Create a report if you are experiencing a problem/limitation with the provided helm charts
+labels: []
+name: Problem report
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Before you start
+
+        Please search our [existing issues](https://github.com/BIRU-Scop/helm-charts/issues) and open [pull requests](https://github.com/BIRU-Scop/helm-charts/pulls) to lessen the chance of filing duplicates. Thank you.
+
+        ---
+  - type: textarea
+    attributes:
+      description: What chart are your using and which version?
+      label: Used chart(s)
+      placeholder: |
+        - tenzu-back (0.1.3)
+        - ...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      description: What environment are your using the chart in?
+      label: Environment
+      placeholder: |
+        - GKE, self-hosted rke, etc
+        - What k8s version?
+        - How are the redis and postgresql deployed?
+        - What about your network configuration?
+        - Anything else worth mentioning?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Issue
+      description: What issue are you having?
+      placeholder: |
+        Is there an error or unexpected behaviour when you are using the charts?
+        Can you provide some details on what is going wrong?
+        Or is there some limitation to the provided charts that prevent you from doing something you need?
+        In that case, what are you exactly trying to achieve (try to give us details beyond the solution you have imagined)?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Any other context about the problem.

@@ -1,0 +1,10 @@
+include:
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.9.1
+    inputs:
+      repo: github.com/BIRU-Scop/helm-charts.git
+      rules:
+        - if: $CI_COMMIT_REF_PROTECTED == "true"
+          when: manual
+
+stages:
+  - mirror

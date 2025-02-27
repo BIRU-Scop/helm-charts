@@ -1,0 +1,11 @@
+repos:
+  - repo: https://github.com/norwoodj/helm-docs
+    rev:  "v1.14.2"
+    hooks:
+      - id: helm-docs-container
+        args:
+          # Make the tool search for charts only under the `charts` directory
+          - --chart-search-root=charts
+          # preserve the order set in the file instead of default alphabetical order for values
+          - --sort-values-order=file
+          - --document-dependency-values=true

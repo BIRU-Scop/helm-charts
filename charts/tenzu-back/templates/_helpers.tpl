@@ -61,7 +61,7 @@ Job annotations
 {{- end }}
 
 {{/*
-Secret depdendencies annotations
+Secret dependencies annotations
 */}}
 {{- define "tenzu-back.secretDependenciesAnnotations" -}}
 checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
@@ -113,21 +113,28 @@ Create the sentry env variable
 {{- end }}
 
 {{/*
-Create the redis env variable
+Create the redis env variable that need to be put into a secret
 */}}
-{{- define "tenzu-back.redisEnvValues" -}}
+{{- define "tenzu-back.redisSecretEnvValues" -}}
 {{- if .Values.global.redis -}}
 - name: TENZU_EVENTS__REDIS_PASSWORD
   value: {{ .Values.global.redis.password }}
-{{- else if .Values.redis.existingSecret }}
+{{- else if .Values.redis.password }}
+- name: TENZU_EVENTS__REDIS_PASSWORD
+  value: {{ .Values.redis.password }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the redis env variable that can be included directly
+*/}}
+{{- define "tenzu-back.redisEnvValues" -}}
+{{- if .Values.redis.existingSecret }}
 - name: TENZU_EVENTS__REDIS_PASSWORD
   valueFrom:
     secretKeyRef:
       name: {{ .Values.redis.existingSecret }}
-      key: {{ required "A passwordKey is mandatory if redis.existingSecret is used" .Values.redis.passwordKey }}
-{{- else }}
-- name: TENZU_EVENTS__REDIS_PASSWORD
-  value: {{ .Values.redis.password }}
+      key: {{ required " " .Values.redis.passwordKey }}
 {{- end }}
 - name: TENZU_EVENTS__REDIS_HOST
   value: {{ required "A host is mandatory for redis " .Values.redis.host }}
@@ -137,9 +144,9 @@ Create the redis env variable
 
 
 {{/*
-Create the postgresql env variable
+Create the postgresql env variable that need to be put into a secret
 */}}
-{{- define "tenzu-back.postgresqlEnvValues" -}}
+{{- define "tenzu-back.postgresqlSecretEnvValues" -}}
 {{- if .Values.global.postgresql -}}
 - name: TENZU_DB__PASSWORD
   value: {{ required "A password is mandatory for postgresql.global" .Values.global.postgresql.auth.password }}
@@ -147,7 +154,26 @@ Create the postgresql env variable
   value: {{ required "A database is mandatory for postgresql.global" .Values.global.postgresql.auth.database }}
 - name: TENZU_DB__USER
   value: {{ required "A username is mandatory for postgresql.global" .Values.global.postgresql.auth.username }}
-{{- else if .Values.postgresql.auth.existingSecret -}}
+{{- else }}
+{{- if .Values.postgresql.auth.password }}
+- name: TENZU_DB__PASSWORD
+  value: {{ .Values.postgresql.auth.password }}
+{{- end }}
+{{- if .Values.postgresql.auth.database }}
+- name: TENZU_DB__NAME
+  value: {{ .Values.postgresql.auth.database }}
+{{- end }}
+{{- if .Values.postgresql.auth.username }}
+- name: TENZU_DB__USER
+  value: {{ .Values.postgresql.auth.username }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the postgresql env variable that can be included directly
+*/}}
+{{- define "tenzu-back.postgresqlEnvValues" -}}
+{{- if .Values.postgresql.auth.existingSecret -}}
 {{- if .Values.postgresql.auth.passwordKey }}
 - name: TENZU_DB__PASSWORD
   valueFrom:
@@ -180,7 +206,7 @@ Create the email env variable
 */}}
 {{- define "tenzu-back.emailEnvValues" -}}
 - name: TENZU_SUPPORT_EMAIL
-  value: {{ .Values.supportEmail }}
+  value: {{ .Values.email.supportEmail }}
 - name: TENZU_EMAIL__EMAIL_BACKEND
   value: "django.core.mail.backends.smtp.EmailBackend"
 - name: TENZU_EMAIL__DEFAULT_FROM_EMAIL
@@ -216,18 +242,7 @@ Define the frontend and backend url
 */}}
 {{- define "tenzu-back.urls" -}}
 - name: TENZU_BACKEND_URL
-  value: {{ printf "https://%s" .Values.global.tenzu.backendDomain }}
+  value: {{ printf "%s://%s" .Values.global.tenzu.backendUrl.scheme .Values.global.tenzu.backendUrl.host }}
 - name: TENZU_FRONTEND_URL
-  value: {{ printf "https://%s" .Values.global.tenzu.frontendDomain }}
-{{- end }}
-
-
-{{/*
-Define the tenzu media / static root
-*/}}
-{{- define "tenzu-back.rootMediaStatic" -}}
-- name: TENZU_STATIC_ROOT
-  value: "/code/public/static"
-- name: TENZU_MEDIA_ROOT
-  value: "/code/public/media"
+  value: {{ printf "%s://%s" .Values.global.tenzu.frontendUrl.scheme .Values.global.tenzu.frontendUrl.host }}
 {{- end }}

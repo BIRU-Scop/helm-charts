@@ -2,130 +2,128 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-replicaCount: 1
-
-# To enable sentry on the Frontend part
-sentry:
-  enabled: false
-  # dsn: ""
-  # environment: ""
-
-# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
-image:
-  repository: ghcr.io/biru-scop/tenzu-front
-  # This sets the pull policy for images.
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: v0-1-0-demo-13-early
-
-# This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-imagePullSecrets:
-  - name: gitlab-registry
-
-# This is to override the chart name.
+# -- Used by name template: to fill the app.kubernetes.io/name label
+# @default -- will use .Chart.Name
 nameOverride: ""
+# -- Used by fullname template: to fill the name of all created kubernetes component
+# @default -- will use .Release.Name suffixed with name template, if .Release.Name does not already contains it
 fullnameOverride: ""
 
-#This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+# -- number of pod replicas for the frontend Deployment if not using autoscaling
+# see: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replicaCount: 1
+
+sentry:
+  # -- Whether to set the environment variable expected by the error tracker
+  enabled: False
+  # -- (string) Used to populate json config `sentry.dsn`
+  dsn:
+  # -- (string) Used to populate json config `sentry.environment`,
+  # sentry.release will be set using the image.tag value when docker image is built
+  environment:
+
+# -- Image to use for the application
+# see: https://kubernetes.io/docs/concepts/containers/images/
+image:
+  repository: ghcr.io/biru-scop/tenzu-back
+  pullPolicy: IfNotPresent
+  # -- Overrides the image tag
+  # @default -- Uses the .Chart.AppVersion if not set
+  tag: latest
+
+# -- (list) List of secrets needed to pull an image from a private repository
+# see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets:
+
+# -- service account properties
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- Specifies whether a service account should be created
   create: true
-  # Automatically mount a ServiceAccount's API credentials?
+  # -- Automatically mount a ServiceAccount's API credentials
   automount: true
-  # Annotations to add to the service account
+  # -- Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # -- The name of the service account to use.
+  # @default -- If create is true, a name is generated using the fullname template, else it will be set to "default"
   name: ""
 
-# This is for setting Kubernetes Annotations to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ 
+# -- Extra annotation to put on frontend Deployment object
+# see: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
-# This is for setting Kubernetes Labels to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+# -- Extra labels to put on frontend Deployment object
+# see: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
-
+# -- definition of the pod level securityContext on frontend Deployment object
 podSecurityContext: {}
-  # fsGroup: 2000
-
+# -- definition of the container level securityContext on frontend Deployment object
 securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
-# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+# -- see: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
-  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  # -- service type defined for the frontend
   type: ClusterIP
-  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  # -- service port to access the frontend
   port: 80
 
-# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+# -- properties used to define an Ingress
+# see: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
   enabled: false
+  # -- will be used to set ingressClassName and "kubernetes.io/ingress.class" annotation depending on k8s version
   className: ""
+  # -- ingress annotations, can be "kubernetes.io/ingress.class", "kubernetes.io/tls-acme", "cert-manager.io/cluster-issuer", etc.
+  # @default -- Will set kubernetes.io/ingress.class to ingress.className if needed
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  # -- list of the hosts that will be exposed
+  hosts: []
+  # -- Expect values in format {secretName: "", hosts: []},
+  # If one of the domain in `ingress.hosts` is also defined as `global.backendUrl.host`
+  # You must take care to define tls for it if you also set `global.backendUrl.scheme` to "https"
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
+# -- container's resources definition set on every jobs and on the frontend Deployment object,
+# If you want to set it, use the following format: `{limits: {cpu: 100m, memory: 128Mi}, requests: cpu: 100m, memory: 128Mi}}`
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
 
-# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+
+# -- livenessProbe for the container of the frontend service
+# see: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
   httpGet:
     path: /
     port: http
+# -- readinessProbe for the container of the frontend service
+# see: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 readinessProbe:
   httpGet:
     path: /
     port: http
-
-#This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+# -- Whether to define a HorizontalPodAutoscaler with the following scaling properties on cpu and memory consumption
+# see: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
 
-
-# Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
-
+# -- nodeSelector pod property for the frontend Deployment object
 nodeSelector: {}
-
+# -- tolerations pod property for the frontend Deployment object
 tolerations: []
-
+# -- affinity pod property for the frontend Deployment object
 affinity: {}
+
+# -- Additional volumes for the frontend Deployment object
+volumes: []
+# -- Additional volumeMounts for the frontend Deployment object
+volumeMounts: []
+
+# -- global values to share properties among charts.
+global:
+  # -- url used to serve the backend, will be used to set json config `api.baseDomain`, `api.scheme` and `wsUrl`
+  backendUrl:
+    scheme: 'https'
+    websocketScheme: 'wss'
+    # -- (string)
+    host:
