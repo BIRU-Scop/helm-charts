@@ -137,19 +137,19 @@ spec:
               {{- end }}
             envFrom:
             - secretRef:
-                name: tenzu-secrets    
-            {{- if not (empty .Values.envFrom )}}  
+                name: tenzu-secrets
+            {{- if not (empty .Values.envFrom )}}
             {{- toYaml .Values.envFrom | nindent 14 }}
             {{- end }}
             imagePullPolicy: {{ .Values.image.pullPolicy }}
             resources:
-              {{- toYaml .Values.resources | nindent 12 }}
+              {{- toYaml .Values.resources | nindent 14 }}
             volumeMounts:
               - name: public
                 mountPath: /public/
           volumes:
             - name: public
               persistentVolumeClaim:
-                claimName: pvc-{{ .Release.Name }}-public
+                claimName: pvc-{{ $.Release.Name }}-public
 {{ end -}}
 {{ end -}}
