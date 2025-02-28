@@ -10,14 +10,14 @@ data:
   config.json: |
     {
       "api": {
-        "baseDomain": "{{ .Values.global.tenzu.backendUrl.host }}",
-        "scheme": "{{ .Values.tenzu.backendUrl.scheme }}"
+        "baseDomain": "{{ .Values.global.backendUrl.host }}",
+        "scheme": "{{ .Values.global.backendUrl.scheme }}"
       },
 {{- if .Values.sentry.enabled }}
       "sentry": {
-        "dsn": "{{ .Values.sentry.dsn }}"
+        "dsn": "{{ .Values.sentry.dsn }}",
         "environment": "{{ .Values.sentry.environment | default "production" }}"
       },
 {{- end }}
-      "wsUrl": "{{ .Values.tenzu.backendUrl.websocketScheme }}://{{ .Values.global.tenzu.backendUrl.host }}/events/"
+      "wsUrl": "{{ .Values.global.backendUrl.websocketScheme }}://{{ .Values.global.backendUrl.host }}/events/"
     }

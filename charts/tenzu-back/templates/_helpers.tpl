@@ -168,6 +168,7 @@ Create the postgresql env variable that need to be put into a secret
   value: {{ .Values.postgresql.auth.username }}
 {{- end }}
 {{- end }}
+{{- end }}
 
 {{/*
 Create the postgresql env variable that can be included directly
@@ -233,7 +234,7 @@ Define the secrets keys
 - name: TENZU_SECRET_KEY
   value: {{ required "a .secretKey is required" .Values.secretKey | quote }}
 - name: TENZU_TOKENS__SIGNING_KEY
-  value: {{ required "a .tokensSigningKey is required" .Values.tokensSigningKey | quote }}
+  value: {{ required "a .tokensSigningKey is required" .Values.tokenSigningKey | quote }}
 {{- end }}
 
 
@@ -242,7 +243,7 @@ Define the frontend and backend url
 */}}
 {{- define "tenzu-back.urls" -}}
 - name: TENZU_BACKEND_URL
-  value: {{ printf "%s://%s" .Values.global.tenzu.backendUrl.scheme .Values.global.tenzu.backendUrl.host }}
+  value: {{ printf "%s://%s" .Values.global.backendUrl.scheme .Values.global.backendUrl.host }}
 - name: TENZU_FRONTEND_URL
-  value: {{ printf "%s://%s" .Values.global.tenzu.frontendUrl.scheme .Values.global.tenzu.frontendUrl.host }}
+  value: {{ printf "%s://%s" .Values.global.frontendUrl.scheme .Values.global.frontendUrl.host }}
 {{- end }}
