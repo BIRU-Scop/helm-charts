@@ -7,8 +7,8 @@ metadata:
     job-name: "{{ .Release.Name }}-migrate"
     {{- include "tenzu-back.labels" . | nindent 4 }}
   annotations:
-    {{- include "tenzu-back.jobAnnotations" . | nindent 4 }}
-    {{- include "tenzu-back.secretDependenciesAnnotations" . | nindent 4 }}
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   template:
     metadata:
@@ -58,7 +58,8 @@ metadata:
     job-name: "{{ .Release.Name }}-collectstatic"
     {{- include "tenzu-back.labels" . | nindent 4 }}
   annotations:
-    {{- include "tenzu-back.jobAnnotations" . | nindent 4 }}
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   template:
     metadata:
@@ -85,6 +86,57 @@ spec:
         envFrom:
           - secretRef:
               name: tenzu-secrets       
+        {{- if not (empty .Values.envFrom )}}
+        {{- toYaml .Values.envFrom | nindent 10 }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+          - name: public
+            mountPath: /public/
+      volumes:
+        - name: public
+          persistentVolumeClaim:
+            claimName: pvc-{{ .Release.Name }}-public
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "tenzu-back.fullname" . }}-projecttemplate
+  labels:
+    app.kubernetes.io/component: db
+    job-name: "{{ .Release.Name }}-projecttemplate"
+    {{- include "tenzu-back.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    metadata:
+      name: {{ include "tenzu-back.fullname" . }}
+      labels:
+        {{- include "tenzu-back.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Never
+      containers:
+      - name: projecttemplate
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        command: ["./manage.py", "loaddata", "initial_project_templates"]
+        env:
+          {{- include "tenzu-back.sentryEnvValues" . | nindent 10 -}}
+          {{- include "tenzu-back.redisEnvValues" . | nindent 10 -}}
+          {{- include "tenzu-back.postgresqlEnvValues" . | nindent 10 -}}
+          {{- if not (empty .Values.env )}}
+          {{- toYaml .Values.env | nindent 10 }}
+          {{- end }}
+        envFrom:
+          - secretRef:
+              name: tenzu-secrets
         {{- if not (empty .Values.envFrom )}}
         {{- toYaml .Values.envFrom | nindent 10 }}
         {{- end }}
