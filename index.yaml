@@ -161,6 +161,17 @@ entries:
     version: 0.0.1
   tenzu-back:
   - apiVersion: v2
+    created: "2025-03-03T15:11:50.27038878Z"
+    description: A Helm chart to run the API webservices backend and task queue worker
+      of Tenzu
+    digest: b99d59b0783796aa6d6d2bda532f0f15a15f863764d414853ac672dc41c94ba2
+    home: https://tenzu.net/docs
+    name: tenzu-back
+    type: application
+    urls:
+    - https://github.com/BIRU-Scop/helm-charts/releases/download/tenzu-back-0.1.6/tenzu-back-0.1.6.tgz
+    version: 0.1.6
+  - apiVersion: v2
     appVersion: 0.0.1
     created: "2025-02-21T15:19:08.64295378Z"
     description: A Helm chart for Kubernetes
@@ -202,6 +213,16 @@ entries:
     version: 0.1.0
   tenzu-front:
   - apiVersion: v2
+    created: "2025-03-03T15:11:50.412114691Z"
+    description: A Helm chart to run the SPA frontend of Tenzu
+    digest: 112371d1225cf7346e560e686d603eafcfd4ff4dd9e70899eb27b12708f95c91
+    home: https://tenzu.net/docs
+    name: tenzu-front
+    type: application
+    urls:
+    - https://github.com/BIRU-Scop/helm-charts/releases/download/tenzu-front-0.1.4/tenzu-front-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
     appVersion: 0.1.0
     created: "2025-02-12T13:57:45.823313399Z"
     description: A Helm chart for Kubernetes
@@ -221,4 +242,4 @@ entries:
     urls:
     - https://github.com/BIRU-Scop/helm-charts/releases/download/tenzu-front-0.1.0/tenzu-front-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-21T15:19:08.642990919Z"
+generated: "2025-03-03T15:11:50.412161649Z"
