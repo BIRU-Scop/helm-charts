@@ -53,7 +53,7 @@ A Helm chart to run the full Tenzu web application
 | tenzu-back.email.password | string | `nil` | Used to populate `TENZU_EMAIL__EMAIL_HOST_PASSWORD` |
 | tenzu-back.email.supportEmail | string | `nil` | Used to populate `TENZU_SUPPORT_EMAIL` |
 | tenzu-back.image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/biru-scop/tenzu-back","tag":"latest"}` | Image to use for the application see: https://kubernetes.io/docs/concepts/containers/images/ |
-| tenzu-back.image.tag | string | Uses the .Chart.AppVersion if not set | Overrides the image tag |
+| tenzu-back.image.tag | string | `"latest"` | Overrides the image tag |
 | tenzu-back.imagePullSecrets | list | `nil` | List of secrets needed to pull an image from a private repository see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ |
 | tenzu-back.serviceAccount | object | `{"annotations":{},"automount":true,"create":true,"name":""}` | service account properties |
 | tenzu-back.serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
@@ -105,7 +105,7 @@ A Helm chart to run the full Tenzu web application
 | tenzu-front.sentry.dsn | string | `nil` | Used to populate json config `sentry.dsn` |
 | tenzu-front.sentry.environment | string | `nil` | Used to populate json config `sentry.environment`, sentry.release will be set using the image.tag value when docker image is built |
 | tenzu-front.image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/biru-scop/tenzu-back","tag":"latest"}` | Image to use for the application see: https://kubernetes.io/docs/concepts/containers/images/ |
-| tenzu-front.image.tag | string | Uses the .Chart.AppVersion if not set | Overrides the image tag |
+| tenzu-front.image.tag | string | `"latest"` | Overrides the image tag |
 | tenzu-front.imagePullSecrets | list | `nil` | List of secrets needed to pull an image from a private repository see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ |
 | tenzu-front.serviceAccount | object | `{"annotations":{},"automount":true,"create":true,"name":""}` | service account properties |
 | tenzu-front.serviceAccount.create | bool | `true` | Specifies whether a service account should be created |

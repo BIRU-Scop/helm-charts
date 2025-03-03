@@ -37,7 +37,7 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | email.password | string | `nil` | Used to populate `TENZU_EMAIL__EMAIL_HOST_PASSWORD` |
 | email.supportEmail | string | `nil` | Used to populate `TENZU_SUPPORT_EMAIL` |
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/biru-scop/tenzu-back","tag":"latest"}` | Image to use for the application see: https://kubernetes.io/docs/concepts/containers/images/ |
-| image.tag | string | Uses the .Chart.AppVersion if not set | Overrides the image tag |
+| image.tag | string | `"latest"` | Overrides the image tag |
 | imagePullSecrets | list | `nil` | List of secrets needed to pull an image from a private repository see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ |
 | serviceAccount | object | `{"annotations":{},"automount":true,"create":true,"name":""}` | service account properties |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
