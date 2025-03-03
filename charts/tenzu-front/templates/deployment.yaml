@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "tenzu-front.fullname" . }}
   labels:
+    app.kubernetes.io/component: "frontend"
     {{- include "tenzu-front.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}

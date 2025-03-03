@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: "{{ include "tenzu-back.fullname" . }}-caddy"
   labels:
+    app.kubernetes.io/component: "reverse-proxy"
     {{- include "tenzu-back.caddyLabels" . | nindent 4 }}
 spec:
   replicas: {{.Values.caddy.replicas}}
@@ -54,6 +55,7 @@ kind: Deployment
 metadata:
   name: {{ include "tenzu-back.fullname" . }}
   labels:
+    app.kubernetes.io/component: "api"
     {{- include "tenzu-back.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
@@ -170,6 +172,7 @@ kind: Deployment
 metadata:
   name: {{ include "tenzu-back.fullname" . }}-worker
   labels:
+    app.kubernetes.io/component: "task-queue"
     {{- include "tenzu-back.workerLabels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}

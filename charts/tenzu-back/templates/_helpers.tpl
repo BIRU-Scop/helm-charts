@@ -36,9 +36,7 @@ Common labels
 {{- define "tenzu-back.labels" -}}
 helm.sh/chart: {{ include "tenzu-back.chart" . }}
 {{ include "tenzu-back.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ .Values.image.tag | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 

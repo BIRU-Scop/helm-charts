@@ -1,6 +1,6 @@
 # tenzu
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the full Tenzu web application
 
@@ -10,8 +10,8 @@ A Helm chart to run the full Tenzu web application
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../tenzu-back | tenzu-back | 0.1.4 |
-| file://../tenzu-front | tenzu-front | 0.1.2 |
+| file://../tenzu-back | tenzu-back | 0.1.5 |
+| file://../tenzu-front | tenzu-front | 0.1.3 |
 | https://charts.bitnami.com/bitnami/ | postgresql | 16.3.2 |
 | https://charts.bitnami.com/bitnami/ | redis | 20.2.1 |
 
