@@ -8,7 +8,7 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 
 ## Values
 
-> [!NOTE]
+> [!IMPORTANT]
 > A lot of the the values are described as being used to populate some environment variables,
 > you can find the description of those variables in the [documentation](https://tenzu.net/docs/configuration#configure-tenzu-backend)
 
