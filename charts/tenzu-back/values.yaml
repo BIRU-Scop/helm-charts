@@ -174,9 +174,8 @@ volumes: []
 volumeMounts: []
 
 postgresql:
-  # -- To configure the postgresql connexion you can use global or local values.
-  # Local values can use an existing secret, direct values or a mix of both
-  # Only use on method for each expected value
+  # -- To configure the postgresql connexion you can use an existing secret, direct values or a mix of both
+  # Only use one method for each expected value
   auth:
     # -- (string) existing secret where all necessary value can be found
     existingSecret:
@@ -196,7 +195,7 @@ postgresql:
   # It can be something like tenzu-postgres.$NAMESPACE.svc.cluster.local
   host:
 
-# Specify redis configuration, password can be given directly or through a secret, it can also be defined as a global
+# -- Specify redis configuration, password can be given directly or through a secret
 redis:
   # -- Used to populate `TENZU_EVENTS__REDIS_OPTIONS`
   options: '{"health_check_interval": 5}'
@@ -215,21 +214,10 @@ redis:
 
 # -- global values to share properties among charts.
 global:
-  # -- (object) redis.password will be used to set `TENZU_EVENTS__REDIS_PASSWORD` if defined
-  # You still need to define redis.host as a local value.
-  # Useful if you're using bitnami/redis as this value will also be used
-  redis:
-  # -- (object) The expected global value for postgres is an object formatted like
-  # {auth: {password: string, username: string, database: string}}
-  #  in order to set respectively `TENZU_DB__PASSWORD`, `TENZU_DB__USER` and `TENZU_DB__NAME`.
-  # You still need to define postgres.host as a local value.
-  # Useful if you're using bitnami/postgresql as this value will also be used
-  postgresql:
   # -- url used to serve the backend, will be used to set `TENZU_BACKEND_URL`
   # If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls
   backendUrl:
     scheme: 'https'
-    websocketScheme: 'wss'
     # -- (string)
     host:
 

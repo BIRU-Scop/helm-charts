@@ -1,6 +1,6 @@
 # tenzu-back
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the API webservices backend and task queue worker of Tenzu
 
@@ -68,7 +68,7 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | persistentVolumeClaim.public.resources.requests.storage | string | `"10Gi"` | Storage size for the PersistentVolumeClaim used by the volume for public files, change the capacity to what you need |
 | volumes | list | `[]` | Additional volumes for the backend and task queue Deployment objects |
 | volumeMounts | list | `[]` | Additional volumeMounts for the backend and task queue Deployment objects |
-| postgresql.auth | object | `{"database":null,"databaseKey":null,"existingSecret":null,"password":null,"passwordKey":null,"username":null,"usernameKey":null}` | To configure the postgresql connexion you can use global or local values. Local values can use an existing secret, direct values or a mix of both Only use on method for each expected value |
+| postgresql.auth | object | `{"database":null,"databaseKey":null,"existingSecret":null,"password":null,"passwordKey":null,"username":null,"usernameKey":null}` | To configure the postgresql connexion you can use an existing secret, direct values or a mix of both Only use one method for each expected value |
 | postgresql.auth.existingSecret | string | `nil` | existing secret where all necessary value can be found |
 | postgresql.auth.passwordKey | string | `nil` | key to access value in existingSecret, used to populate `TENZU_DB__PASSWORD` |
 | postgresql.auth.databaseKey | string | `nil` | key to access value in existingSecret, used to populate `TENZU_DB__NAME` |
@@ -77,15 +77,14 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | postgresql.auth.database | string | `nil` | database name value, used to populate `TENZU_DB__NAME` |
 | postgresql.auth.username | string | `nil` | username value, used to populate `TENZU_DB__USER` |
 | postgresql.host | string | `nil` | Used to populate `TENZU_DB__HOST` It can be something like tenzu-postgres.$NAMESPACE.svc.cluster.local |
+| redis | object | `{"existingSecret":null,"host":null,"options":"{\"health_check_interval\": 5}","password":null,"passwordKey":null}` | Specify redis configuration, password can be given directly or through a secret |
 | redis.options | string | `"{\"health_check_interval\": 5}"` | Used to populate `TENZU_EVENTS__REDIS_OPTIONS` |
 | redis.host | string | `nil` | Used to populate `TENZU_EVENTS__REDIS_HOST` It can be something like "tenzu-redis-headless.$NAMESPACE.svc.cluster.local" |
 | redis.password | string | `nil` | Used to populate `TENZU_EVENTS__REDIS_PASSWORD` using the passed value directly |
 | redis.existingSecret | string | `nil` | Used to populate `TENZU_EVENTS__REDIS_PASSWORD` If you want to use an existing secret for the password instead |
 | redis.passwordKey | string | `nil` | Used to populate `TENZU_EVENTS__REDIS_PASSWORD` If you use redis.existingSecret, you must set this key to the corresponding value to use in the secret |
-| global | object | `{"backendUrl":{"host":null,"scheme":"https","websocketScheme":"wss"},"frontendUrl":{"host":null,"scheme":"https"},"postgresql":null,"redis":null}` | global values to share properties among charts. |
-| global.redis | object | `nil` | redis.password will be used to set `TENZU_EVENTS__REDIS_PASSWORD` if defined You still need to define redis.host as a local value. Useful if you're using bitnami/redis as this value will also be used |
-| global.postgresql | object | `nil` | The expected global value for postgres is an object formatted like {auth: {password: string, username: string, database: string}}  in order to set respectively `TENZU_DB__PASSWORD`, `TENZU_DB__USER` and `TENZU_DB__NAME`. You still need to define postgres.host as a local value. Useful if you're using bitnami/postgresql as this value will also be used |
-| global.backendUrl | object | `{"host":null,"scheme":"https","websocketScheme":"wss"}` | url used to serve the backend, will be used to set `TENZU_BACKEND_URL` If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls |
+| global | object | `{"backendUrl":{"host":null,"scheme":"https"},"frontendUrl":{"host":null,"scheme":"https"}}` | global values to share properties among charts. |
+| global.backendUrl | object | `{"host":null,"scheme":"https"}` | url used to serve the backend, will be used to set `TENZU_BACKEND_URL` If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls |
 | global.frontendUrl | object | `{"host":null,"scheme":"https"}` | url used to serve the frontend, will be used to set `TENZU_FRONTEND_URL` If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls |
 
 ----------------------------------------------

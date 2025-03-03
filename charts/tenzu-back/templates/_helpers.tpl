@@ -112,10 +112,7 @@ Create the sentry env variable
 Create the redis env variable that need to be put into a secret
 */}}
 {{- define "tenzu-back.redisSecretEnvValues" -}}
-{{- if .Values.global.redis -}}
-- name: TENZU_EVENTS__REDIS_PASSWORD
-  value: {{ .Values.global.redis.password }}
-{{- else if .Values.redis.password }}
+{{- if .Values.redis.password }}
 - name: TENZU_EVENTS__REDIS_PASSWORD
   value: {{ .Values.redis.password }}
 {{- end }}
@@ -143,14 +140,6 @@ Create the redis env variable that can be included directly
 Create the postgresql env variable that need to be put into a secret
 */}}
 {{- define "tenzu-back.postgresqlSecretEnvValues" -}}
-{{- if .Values.global.postgresql -}}
-- name: TENZU_DB__PASSWORD
-  value: {{ required "A password is mandatory for postgresql.global" .Values.global.postgresql.auth.password }}
-- name: TENZU_DB__NAME
-  value: {{ required "A database is mandatory for postgresql.global" .Values.global.postgresql.auth.database }}
-- name: TENZU_DB__USER
-  value: {{ required "A username is mandatory for postgresql.global" .Values.global.postgresql.auth.username }}
-{{- else }}
 {{- if .Values.postgresql.auth.password }}
 - name: TENZU_DB__PASSWORD
   value: {{ .Values.postgresql.auth.password }}
@@ -162,7 +151,6 @@ Create the postgresql env variable that need to be put into a secret
 {{- if .Values.postgresql.auth.username }}
 - name: TENZU_DB__USER
   value: {{ .Values.postgresql.auth.username }}
-{{- end }}
 {{- end }}
 {{- end }}
 
