@@ -54,9 +54,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Job annotations
 */}}
 {{- define "tenzu-back.jobAnnotations" -}}
-"helm.sh/hook": post-install, pre-upgrade
-"argocd.argoproj.io/hook": PostSync
-"helm.sh/hook-weight": "0"
+"helm.sh/hook": post-install, post-upgrade
 "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 {{- end }}
 
