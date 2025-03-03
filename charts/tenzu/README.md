@@ -12,8 +12,8 @@ A Helm chart to run the full Tenzu web application
 |------------|------|---------|
 | file://../tenzu-back | tenzu-back | 0.1.5 |
 | file://../tenzu-front | tenzu-front | 0.1.3 |
-| https://charts.bitnami.com/bitnami/ | postgresql | 16.3.2 |
-| https://charts.bitnami.com/bitnami/ | redis | 20.2.1 |
+| https://charts.bitnami.com/bitnami/ | postgresql | 16.4.14 |
+| https://charts.bitnami.com/bitnami/ | redis | 19.6.4 |
 
 ## Values
 
