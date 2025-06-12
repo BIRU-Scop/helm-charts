@@ -9,14 +9,17 @@ metadata:
 data:
   config.json: |
     {
+      "env": "{{ .Values.config.environment }}",
       "api": {
+        "prefix": "{{ .Values.config.prefix }}",
+        "suffixDomain": "{{ .Values.config.suffixDomain }}",
         "baseDomain": "{{ .Values.global.backendUrl.host }}",
         "scheme": "{{ .Values.global.backendUrl.scheme }}"
       },
 {{- if .Values.sentry.enabled }}
       "sentry": {
         "dsn": "{{ .Values.sentry.dsn }}",
-        "environment": "{{ .Values.sentry.environment | default "production" }}"
+        "environment": "{{ .Values.sentry.environment | default .Values.config.environment }}"
       },
 {{- end }}
       "wsUrl": "{{ .Values.global.backendUrl.websocketScheme }}://{{ .Values.global.backendUrl.host }}/events/"

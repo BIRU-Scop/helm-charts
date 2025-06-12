@@ -126,3 +126,7 @@ global:
     websocketScheme: 'wss'
     # -- (string)
     host:
+config:
+  environment: "production"
+  prefix: "v1"
+  suffixDomain: "api"
