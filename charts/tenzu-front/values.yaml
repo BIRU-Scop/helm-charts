@@ -126,7 +126,11 @@ global:
     websocketScheme: 'wss'
     # -- (string)
     host:
+# -- used to populate configuration file
 config:
+  # -- ("dev","staging","demo","production") name of the environnement, will change the content of the application banner (only production has no displayed banner)
   environment: "production"
+  # -- used in backend api url path, modify only for advanced use cases where you really need to rewrite the url, you'll need heavy reverse proxy config if you want to change this
   prefix: "v1"
+  # -- used in backend api url path, modify only for advanced use cases where you really need to rewrite the url, you'll need heavy reverse proxy config if you want to change this
   suffixDomain: "api"

@@ -42,7 +42,7 @@ tokenSigningKey:
 # -- additionnal environment variable to set on every jobs and on the backend and task queue Deployment objects.
 env: []
 # -- additionnal environment variable to set on every jobs and on the backend and task queue Deployment objects,
-# fecthed from a seceret or config map
+# fetched from a secret or config map
 envFrom: []
 
 email:

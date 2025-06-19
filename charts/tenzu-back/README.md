@@ -1,6 +1,6 @@
 # tenzu-back
 
-![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the API webservices backend and task queue worker of Tenzu
 
@@ -27,7 +27,7 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | secretKey | string | `nil` | Used to populate `TENZU_SECRET_KEY` |
 | tokenSigningKey | string | `nil` | Used to populate `TENZU_TOKENS__SIGNING_KEY` |
 | env | list | `[]` | additionnal environment variable to set on every jobs and on the backend and task queue Deployment objects. |
-| envFrom | list | `[]` | additionnal environment variable to set on every jobs and on the backend and task queue Deployment objects, fecthed from a seceret or config map |
+| envFrom | list | `[]` | additionnal environment variable to set on every jobs and on the backend and task queue Deployment objects, fetched from a secret or config map |
 | email.tls | bool | `true` | Used to populate `TENZU_EMAIL__EMAIL_USE_TLS` |
 | email.ssl | bool | `false` | Used to populate `TENZU_EMAIL__EMAIL_USE_SSL` |
 | email.port | int | `547` | Used to populate `TENZU_EMAIL__EMAIL_PORT` |
