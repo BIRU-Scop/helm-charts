@@ -210,6 +210,55 @@ Create the email env variable
   value: {{ .Values.email.ssl | quote }}
 {{- end }}
 
+{{/*
+Create the s3 env variable
+*/}}
+{{- define "tenzu-back.s3EnvValues" -}}
+{{- if .Values.s3.enable }}
+- name: TENZU_STORAGE__BACKEND_CLASS
+  value: "storages.backends.s3.S3Storage"
+{{- if .Values.s3.existingSecret.bucketNameKey }}
+- name: TENZU_STORAGE__AWS_STORAGE_BUCKET_NAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.s3.existingSecret.name }}
+      key: {{ .Values.s3.existingSecret.bucketNameKey }}
+{{- else }}
+- name: TENZU_STORAGE__AWS_STORAGE_BUCKET_NAME
+  value: {{ .Values.s3.bucketName }}
+{{- end }}
+{{- if .Values.s3.existingSecret.secretAccessKeyKey}}
+- name: TENZU_STORAGE__AWS_S3_SECRET_ACCESS_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.s3.existingSecret.name }}
+      key: {{ .Values.s3.existingSecret.secretAccessKeyKey }}
+{{- else }}
+- name: TENZU_STORAGE__AWS_S3_SECRET_ACCESS_KEY
+  value: {{ .Values.s3.secretAccessKey }}
+{{- end}}
+{{- if .Values.s3.existingSecret.accessKeyKey }}
+- name: TENZU_STORAGE__AWS_ACCESS_KEY_ID
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.s3.existingSecret.name }}
+      key: {{ .Values.s3.existingSecret.accessKeyKey }}
+{{- else }}
+- name: TENZU_STORAGE__AWS_ACCESS_KEY_ID
+  value: {{ .Values.s3.accessKey }}
+{{- end }}
+{{- if .Values.s3.existingSecret.endpointUrlKey }}
+- name: TENZU_STORAGE__AWS_S3_ENDPOINT_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.s3.existingSecret.name }}
+      key: {{ .Values.s3.existingSecret.endpointUrlKey }}
+{{- else }}
+- name: TENZU_STORAGE__AWS_S3_ENDPOINT_URL
+  value: {{ .Values.s3.endpointUrl }}
+  {{- end }}
+{{- end }}
+{{- end }}
 
 {{/*
 Define the secrets keys

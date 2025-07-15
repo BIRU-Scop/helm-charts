@@ -1,7 +1,9 @@
+{{- if not .Values.s3.enable }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-{{ .Release.Name }}-public
+  name: pvc-{{ .Release.Name }}-media
 spec:
-  {{- .Values.persistentVolumeClaim.public | toYaml | nindent 2 }}
+  {{- .Values.persistentVolumeClaim.media | toYaml | nindent 2 }}
+{{- end }}

@@ -1,6 +1,6 @@
 # tenzu-front
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the SPA frontend of Tenzu
 
@@ -47,8 +47,6 @@ A Helm chart to run the SPA frontend of Tenzu
 | nodeSelector | object | `{}` | nodeSelector pod property for the frontend Deployment object |
 | tolerations | list | `[]` | tolerations pod property for the frontend Deployment object |
 | affinity | object | `{}` | affinity pod property for the frontend Deployment object |
-| volumes | list | `[]` | Additional volumes for the frontend Deployment object |
-| volumeMounts | list | `[]` | Additional volumeMounts for the frontend Deployment object |
 | global | object | `{"backendUrl":{"host":null,"scheme":"https","websocketScheme":"wss"}}` | global values to share properties among charts. |
 | global.backendUrl | object | `{"host":null,"scheme":"https","websocketScheme":"wss"}` | url used to serve the backend, will be used to set json config `api.baseDomain`, `api.scheme` and `wsUrl` |
 | config | object | `{"environment":"production","prefix":"v1","suffixDomain":"api"}` | used to populate configuration file |

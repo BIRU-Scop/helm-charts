@@ -159,19 +159,15 @@ cronJobs: []
 
 
 persistentVolumeClaim:
-  # -- Spec of the PersistentVolumeClaim used by the volume for public files
-  public:
+  # -- Spec of the PersistentVolumeClaim used by the volume for media files
+  media:
     accessModes:
       - ReadWriteMany
     resources:
       requests:
-        # -- Storage size for the PersistentVolumeClaim used by the volume for public files,
+        # -- Storage size for the PersistentVolumeClaim used by the volume for media files,
         # change the capacity to what you need
         storage: 10Gi
-# -- Additional volumes for the backend and task queue Deployment objects
-volumes: []
-# -- Additional volumeMounts for the backend and task queue Deployment objects
-volumeMounts: []
 
 postgresql:
   # -- To configure the postgresql connexion you can use an existing secret, direct values or a mix of both
@@ -211,6 +207,35 @@ redis:
   # -- (string) Used to populate `TENZU_EVENTS__REDIS_PASSWORD`
   # If you use redis.existingSecret, you must set this key to the corresponding value to use in the secret
   passwordKey:
+
+# -- Specify s3 configuration, configuration can be given directly or through a secret
+s3:
+  # -- enable`the s3; if enabled, you must set up all of endpointUrl, accessKey, secretAccessKey, bucketName
+  # either directly or through s3.existingSecret
+  enable: false
+  # -- (string) Used to populate `TENZU_STORAGE__AWS_S3_ENDPOINT_URL`
+  endpointUrl:
+  # -- (string) Used to populate `TENZU_STORAGE__AWS_ACCESS_KEY_ID`
+  accessKey:
+  # -- (string) Used to populate `TENZU_STORAGE__AWS_S3_SECRET_ACCESS_KEY`
+  secretAccessKey:
+  # -- (string) Used to populate `TENZU_STORAGE__AWS_STORAGE_BUCKET_NAME`
+  bucketName:
+
+  # -- Specify s3 configuration through an existing secret
+  existingSecret:
+    # -- (string) The secret name containing the s3 configuration.
+    # **required** if any one of `s3.existingSecret.\*Key` are set
+    name:
+    # -- (string) Fetch from secret instead of setting `s3.endpointUrl`
+    endpointUrlKey:
+    # -- (string) Fetch from secret instead of setting `s3.accessKey`
+    accessKeyKey:
+    # -- (string) Fetch from secret instead of setting `s3.secretAccessKey`
+    secretAccessKeyKey:
+    # -- (string) Fetch from secret instead of setting `s3.bucketName`
+    bucketNameKey:
+
 
 # -- global values to share properties among charts.
 global:

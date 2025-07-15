@@ -1,6 +1,6 @@
 # tenzu-back
 
-![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the API webservices backend and task queue worker of Tenzu
 
@@ -64,10 +64,8 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | tolerations | list | `[]` | tolerations pod property for the backend and task queue Deployment objects |
 | affinity | object | `{}` | affinity pod property for the backend and task queue Deployment objects |
 | cronJobs | list | `[]` | list of object in format {name: string, schedule: string, command: string[]} schedule and command should be set to the format expected by CronJob (see: https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) |
-| persistentVolumeClaim.public | object | `{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"10Gi"}}}` | Spec of the PersistentVolumeClaim used by the volume for public files |
-| persistentVolumeClaim.public.resources.requests.storage | string | `"10Gi"` | Storage size for the PersistentVolumeClaim used by the volume for public files, change the capacity to what you need |
-| volumes | list | `[]` | Additional volumes for the backend and task queue Deployment objects |
-| volumeMounts | list | `[]` | Additional volumeMounts for the backend and task queue Deployment objects |
+| persistentVolumeClaim.media | object | `{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"10Gi"}}}` | Spec of the PersistentVolumeClaim used by the volume for media files |
+| persistentVolumeClaim.media.resources.requests.storage | string | `"10Gi"` | Storage size for the PersistentVolumeClaim used by the volume for media files, change the capacity to what you need |
 | postgresql.auth | object | `{"database":null,"databaseKey":null,"existingSecret":null,"password":null,"passwordKey":null,"username":null,"usernameKey":null}` | To configure the postgresql connexion you can use an existing secret, direct values or a mix of both Only use one method for each expected value |
 | postgresql.auth.existingSecret | string | `nil` | existing secret where all necessary value can be found |
 | postgresql.auth.passwordKey | string | `nil` | key to access value in existingSecret, used to populate `TENZU_DB__PASSWORD` |
@@ -83,6 +81,18 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | redis.password | string | `nil` | Used to populate `TENZU_EVENTS__REDIS_PASSWORD` using the passed value directly |
 | redis.existingSecret | string | `nil` | Used to populate `TENZU_EVENTS__REDIS_PASSWORD` If you want to use an existing secret for the password instead |
 | redis.passwordKey | string | `nil` | Used to populate `TENZU_EVENTS__REDIS_PASSWORD` If you use redis.existingSecret, you must set this key to the corresponding value to use in the secret |
+| s3 | object | `{"accessKey":null,"bucketName":null,"enable":false,"endpointUrl":null,"existingSecret":{"accessKeyKey":null,"bucketNameKey":null,"endpointUrlKey":null,"name":null,"secretAccessKeyKey":null},"secretAccessKey":null}` | Specify s3 configuration, configuration can be given directly or through a secret |
+| s3.enable | bool | `false` | enable`the s3; if enabled, you must set up all of endpointUrl, accessKey, secretAccessKey, bucketName either directly or through s3.existingSecret |
+| s3.endpointUrl | string | `nil` | Used to populate `TENZU_STORAGE__AWS_S3_ENDPOINT_URL` |
+| s3.accessKey | string | `nil` | Used to populate `TENZU_STORAGE__AWS_ACCESS_KEY_ID` |
+| s3.secretAccessKey | string | `nil` | Used to populate `TENZU_STORAGE__AWS_S3_SECRET_ACCESS_KEY` |
+| s3.bucketName | string | `nil` | Used to populate `TENZU_STORAGE__AWS_STORAGE_BUCKET_NAME` |
+| s3.existingSecret | object | `{"accessKeyKey":null,"bucketNameKey":null,"endpointUrlKey":null,"name":null,"secretAccessKeyKey":null}` | Specify s3 configuration through an existing secret |
+| s3.existingSecret.name | string | `nil` | The secret name containing the s3 configuration. **required** if any one of `s3.existingSecret.\*Key` are set |
+| s3.existingSecret.endpointUrlKey | string | `nil` | Fetch from secret instead of setting `s3.endpointUrl` |
+| s3.existingSecret.accessKeyKey | string | `nil` | Fetch from secret instead of setting `s3.accessKey` |
+| s3.existingSecret.secretAccessKeyKey | string | `nil` | Fetch from secret instead of setting `s3.secretAccessKey` |
+| s3.existingSecret.bucketNameKey | string | `nil` | Fetch from secret instead of setting `s3.bucketName` |
 | global | object | `{"backendUrl":{"host":null,"scheme":"https"},"frontendUrl":{"host":null,"scheme":"https"}}` | global values to share properties among charts. |
 | global.backendUrl | object | `{"host":null,"scheme":"https"}` | url used to serve the backend, will be used to set `TENZU_BACKEND_URL` If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls |
 | global.frontendUrl | object | `{"host":null,"scheme":"https"}` | url used to serve the frontend, will be used to set `TENZU_FRONTEND_URL` If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls |

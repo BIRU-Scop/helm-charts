@@ -113,10 +113,6 @@ tolerations: []
 # -- affinity pod property for the frontend Deployment object
 affinity: {}
 
-# -- Additional volumes for the frontend Deployment object
-volumes: []
-# -- Additional volumeMounts for the frontend Deployment object
-volumeMounts: []
 
 # -- global values to share properties among charts.
 global:

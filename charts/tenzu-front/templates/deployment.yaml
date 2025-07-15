@@ -50,16 +50,10 @@ spec:
           volumeMounts:
             - name: config-volume
               mountPath: /usr/share/caddy/assets/configs
-          {{- with .Values.volumeMounts }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
       volumes:
         - name: config-volume
           configMap:
             name: "{{ include "tenzu-front.fullname" . }}-config"
-      {{- with .Values.volumes }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

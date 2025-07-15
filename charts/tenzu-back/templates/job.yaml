@@ -41,64 +41,18 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
+        {{- if not .Values.s3.enable }}
         volumeMounts:
-          - name: public
-            mountPath: /public/
-      volumes:
-        - name: public
-          persistentVolumeClaim:
-            claimName: pvc-{{ .Release.Name }}-public
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: {{ include "tenzu-back.fullname" . }}-collectstatic
-  labels:
-    app.kubernetes.io/component: "job"
-    job-name: "{{ .Release.Name }}-collectstatic"
-    {{- include "tenzu-back.labels" . | nindent 4 }}
-  annotations:
-    "helm.sh/hook": post-install, post-upgrade
-    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-spec:
-  template:
-    metadata:
-      name: {{ include "tenzu-back.fullname" . }}
-      labels:
-        {{- include "tenzu-back.labels" . | nindent 8 }}
-    spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      restartPolicy: Never
-      containers:
-      - name: collectstatic
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-        command: ["./manage.py", "collectstatic", "--noinput"]
-        env:
-          {{- include "tenzu-back.sentryEnvValues" . | nindent 10 -}}
-          {{- include "tenzu-back.redisEnvValues" . | nindent 10 -}}
-          {{- include "tenzu-back.postgresqlEnvValues" . | nindent 10 -}}
-          {{- if not (empty .Values.env )}}
-          {{- toYaml .Values.env | nindent 10 }}
-          {{- end }}
-        envFrom:
-          - secretRef:
-              name: tenzu-secrets       
-        {{- if not (empty .Values.envFrom )}}
-        {{- toYaml .Values.envFrom | nindent 10 }}
+          - name: media
+            mountPath: /public/media/
         {{- end }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        resources:
-          {{- toYaml .Values.resources | nindent 10 }}
-        volumeMounts:
-          - name: public
-            mountPath: /public/
+
+      {{- if not .Values.s3.enable }}
       volumes:
-        - name: public
+        - name: media
           persistentVolumeClaim:
-            claimName: pvc-{{ .Release.Name }}-public
+            claimName: pvc-{{ .Release.Name }}-media
+      {{- end }}
 {{- range $job := .Values.cronJobs }}
 {{- with $ }}
 ---
@@ -146,12 +100,17 @@ spec:
             imagePullPolicy: {{ .Values.image.pullPolicy }}
             resources:
               {{- toYaml .Values.resources | nindent 14 }}
+            {{- if not .Values.s3.enable }}
             volumeMounts:
-              - name: public
-                mountPath: /public/
+              - name: media
+                mountPath: /public/media/
+            {{- end }}
+
+          {{- if not .Values.s3.enable }}
           volumes:
-            - name: public
+            - name: media
               persistentVolumeClaim:
-                claimName: pvc-{{ $.Release.Name }}-public
+                claimName: pvc-{{ $.Release.Name }}-media
+          {{- end }}
 {{ end -}}
 {{ end -}}

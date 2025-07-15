@@ -32,15 +32,10 @@ spec:
               containerPort: 80
               protocol: TCP
           volumeMounts:
-            - name: public
-              mountPath: /public/
             - mountPath: /etc/caddy/Caddyfile
               name: config
               subPath: Caddyfile
       volumes:
-        - name: public
-          persistentVolumeClaim:
-            claimName: pvc-{{ .Release.Name }}-public
         - name: config
           configMap:
             name: "{{ include "tenzu-back.fullname" . }}-caddy-config"
@@ -102,6 +97,7 @@ spec:
             {{- include "tenzu-back.redisEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.postgresqlEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.emailEnvValues" . | nindent 12 -}}
+            {{- include "tenzu-back.s3EnvValues" . | nindent 12 -}}
             {{- if not (empty .Values.env )}}
             {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
@@ -140,18 +136,16 @@ spec:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
+          {{- if not .Values.s3.enable }}
           volumeMounts:
-            - name: public
-              mountPath: /public/
-          {{- with .Values.volumeMounts }}
-            {{- toYaml . | nindent 12 }}
+            - name: media
+              mountPath: /public/media
           {{- end }}
+      {{- if not .Values.s3.enable }}
       volumes:
-        - name: public
+        - name: media
           persistentVolumeClaim:
-            claimName: pvc-{{ .Release.Name }}-public
-      {{- with .Values.volumes }}
-        {{- toYaml . | nindent 8 }}
+            claimName: pvc-{{ .Release.Name }}-media
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -233,19 +227,17 @@ spec:
             - "worker"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if not .Values.s3.enable }}
           volumeMounts:
-            - name: public
-              mountPath: /public/
-          {{- with .Values.volumeMounts }}
-            {{- toYaml . | nindent 12 }}
+            - name: media
+              mountPath: /public/media
           {{- end }}
+      {{- if not .Values.s3.enable }}
       volumes:
-        - name: public
+        - name: media
           persistentVolumeClaim:
-            claimName: pvc-{{ .Release.Name }}-public
-      {{- with .Values.volumes }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+            claimName: pvc-{{ .Release.Name }}-media
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
