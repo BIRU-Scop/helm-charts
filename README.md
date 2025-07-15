@@ -14,7 +14,7 @@ helm repo add biru https://biru-scop.github.io/helm-charts/
 
 ###
 For more details on Tenzu's charts usage, see 
-[Tenzu's technical documentation](https://tenzu.net/docs/category/helm-chart)
+[Tenzu's technical documentation](https://tenzu.net/docs/deployment/kubernetes)
 
 # Contributing
 
