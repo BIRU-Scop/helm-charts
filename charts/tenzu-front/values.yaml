@@ -130,3 +130,5 @@ config:
   prefix: "v1"
   # -- used in backend api url path, modify only for advanced use cases where you really need to rewrite the url, you'll need heavy reverse proxy config if you want to change this
   suffixDomain: "api"
+  # -- extra key for the plugins configuration
+  extraConfiguration:
