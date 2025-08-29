@@ -107,6 +107,22 @@ spec:
           {{- if not (empty .Values.envFrom )}}
           {{- toYaml .Values.envFrom | nindent 12 }}
           {{- end }}
+          {{- if .Values.granian}}
+          command: ["granian"]
+          args:
+            - "--interface"
+            - "asgi"
+            - "configurations.asgi:application"
+            - "--host"
+            - "0.0.0.0"
+            - "--port"
+            - "{{ .Values.service.port }}"
+            - "--workers"
+            - "{{ .Values.workersQuantity }}"
+            - "--log-level"
+            - "{{ .Values.logLevel | default "warning" }}"
+            - "--access-log"
+          {{- else }}
           command: ["gunicorn"]
           args:
             - "configurations.asgi:application"
@@ -126,6 +142,7 @@ spec:
             - "--capture-output"
             - "--log-level"
             - "{{ .Values.logLevel | default "warning" }}"
+          {{- end}}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

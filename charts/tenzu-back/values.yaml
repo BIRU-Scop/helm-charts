@@ -16,13 +16,16 @@ replicaCount: 1
 # Number of replicas for the reverse proxy deployment
 caddy:
   replicas: 1
+# server options
+# -- choice true: granian, false gunicorn
+granian: false
 
-# gunicorn options
-# -- number workers started by gunicorn
+# server options
+# -- number workers started by the server
 workersQuantity: 1
-# -- timeout of workers used by gunicorn
+# -- timeout of workers used by the server
 workersTimeout: 120
-# -- level of log produced by gunicorn
+# -- level of log produced by the server
 logLevel: "warning"
 
 sentry:
