@@ -21,7 +21,7 @@ data:
       route /ready/ {
               respond 200
       }
-      reverse_proxy http://{{ include "tenzu-back.fullname" . }}:{{ .Values.service.port }} {
+      reverse_proxy http://localhost:{{ .Values.service.port }} {
           header_up X-Forwarded-Proto https
           transport http {
                 response_header_timeout {{.Values.workersTimeout}}s
