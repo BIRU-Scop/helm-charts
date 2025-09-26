@@ -1,6 +1,6 @@
 # tenzu-front
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the SPA frontend of Tenzu
 
@@ -47,8 +47,9 @@ A Helm chart to run the SPA frontend of Tenzu
 | nodeSelector | object | `{}` | nodeSelector pod property for the frontend Deployment object |
 | tolerations | list | `[]` | tolerations pod property for the frontend Deployment object |
 | affinity | object | `{}` | affinity pod property for the frontend Deployment object |
-| global | object | `{"backendUrl":{"host":null,"scheme":"https","websocketScheme":"wss"}}` | global values to share properties among charts. |
+| global | object | `{"backendUrl":{"host":null,"scheme":"https","websocketScheme":"wss"},"maxUploadFileSize":"104857600"}` | global values to share properties among charts. |
 | global.backendUrl | object | `{"host":null,"scheme":"https","websocketScheme":"wss"}` | url used to serve the backend, will be used to set json config `api.baseDomain`, `api.scheme` and `wsUrl` |
+| global.maxUploadFileSize | int or "null" | `"104857600"` | maximum size, in bytes, for uploaded files. Set to "null" for no limit. You may need to adapt the ingress configuration to support big uploads |
 | config | object | `{"environment":"production","extraConfiguration":null,"prefix":"v1","suffixDomain":"api"}` | used to populate configuration file |
 | config.environment | "dev","staging","demo","production" | `"production"` | name of the environnement, will change the content of the application banner (only production has no displayed banner) |
 | config.prefix | string | `"v1"` | used in backend api url path, modify only for advanced use cases where you really need to rewrite the url, you'll need heavy reverse proxy config if you want to change this |

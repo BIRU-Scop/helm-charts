@@ -22,6 +22,7 @@ data:
         "environment": "{{ .Values.sentry.environment | default .Values.config.environment }}"
       },
 {{- end }}
+      "maxUploadFileSize": {{ .Values.global.maxUploadFileSize | trimAll "\"" }},
       "wsUrl": "{{ .Values.global.backendUrl.websocketScheme }}://{{ .Values.global.backendUrl.host }}/events/"{{- if .Values.config.extraConfiguration }},
       {{ .Values.config.extraConfiguration | toJson | trimPrefix "{" | trimSuffix "}"}}
       {{- end}}

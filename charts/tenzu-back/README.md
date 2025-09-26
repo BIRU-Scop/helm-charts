@@ -1,6 +1,6 @@
 # tenzu-back
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the API webservices backend and task queue worker of Tenzu
 
@@ -94,8 +94,9 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | s3.existingSecret.accessKeyKey | string | `nil` | Fetch from secret instead of setting `s3.accessKey` |
 | s3.existingSecret.secretAccessKeyKey | string | `nil` | Fetch from secret instead of setting `s3.secretAccessKey` |
 | s3.existingSecret.bucketNameKey | string | `nil` | Fetch from secret instead of setting `s3.bucketName` |
-| global | object | `{"backendUrl":{"host":null,"scheme":"https"},"frontendUrl":{"host":null,"scheme":"https"}}` | global values to share properties among charts. |
+| global | object | `{"backendUrl":{"host":null,"scheme":"https"},"frontendUrl":{"host":null,"scheme":"https"},"maxUploadFileSize":"104857600"}` | global values to share properties among charts. |
 | global.backendUrl | object | `{"host":null,"scheme":"https"}` | url used to serve the backend, will be used to set `TENZU_BACKEND_URL` If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls |
+| global.maxUploadFileSize | int or "null" | `"104857600"` | maximum size, in bytes, for uploaded files. Set to "null" for no limit. You may need to adapt the ingress configuration to support big uploads |
 | global.frontendUrl | object | `{"host":null,"scheme":"https"}` | url used to serve the frontend, will be used to set `TENZU_FRONTEND_URL` If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls |
 
 ----------------------------------------------

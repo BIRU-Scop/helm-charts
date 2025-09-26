@@ -66,6 +66,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: TENZU_MAX_UPLOAD_FILE_SIZE
+              value: {{ .Values.global.maxUploadFileSize | quote }}
             {{- include "tenzu-back.urls" . | nindent 12 -}}
             {{- include "tenzu-back.sentryEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.redisEnvValues" . | nindent 12 -}}
@@ -202,6 +204,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: TENZU_MAX_UPLOAD_FILE_SIZE
+              value: {{ .Values.global.maxUploadFileSize | quote }}
             {{- include "tenzu-back.urls" . | nindent 12 -}}
             {{- include "tenzu-back.sentryEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.redisEnvValues" . | nindent 12 -}}

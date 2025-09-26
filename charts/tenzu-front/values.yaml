@@ -122,6 +122,8 @@ global:
     websocketScheme: 'wss'
     # -- (string)
     host:
+  # -- (int or "null") maximum size, in bytes, for uploaded files. Set to "null" for no limit. You may need to adapt the ingress configuration to support big uploads
+  maxUploadFileSize: "104857600"
 # -- used to populate configuration file
 config:
   # -- ("dev","staging","demo","production") name of the environnement, will change the content of the application banner (only production has no displayed banner)

@@ -248,6 +248,8 @@ global:
     scheme: 'https'
     # -- (string)
     host:
+  # -- (int or "null") maximum size, in bytes, for uploaded files. Set to "null" for no limit. You may need to adapt the ingress configuration to support big uploads
+  maxUploadFileSize: "104857600"
 
   # -- url used to serve the frontend, will be used to set `TENZU_FRONTEND_URL`
   # If exposed via ingress, host should be the same as the ingress' and scheme must be coherent with ingress' tls
