@@ -17,10 +17,11 @@ spec:
   template:
     metadata:
       annotations:
-      {{- with .Values.podAnnotations }}
-      {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- include "tenzu-back.secretDependenciesAnnotations" . | nindent 8 }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- include "tenzu-back.secretDependenciesAnnotations" . | nindent 8 }}
+        kubectl.kubernetes.io/default-container: {{ .Chart.Name }}
       labels:
         {{- include "tenzu-back.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
