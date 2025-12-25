@@ -4,6 +4,12 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: pvc-{{ .Release.Name }}-media
+  annotations:
+    {{- if .Values.argoCDMode }}
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/sync-wave: "-2"
+    {{- end }}
+
 spec:
   {{- .Values.persistentVolumeClaim.media | toYaml | nindent 2 }}
 {{- end }}

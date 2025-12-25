@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# -- Set to true if you are using ArgoCD to deploy. Used to adjust some sync options.
+argoCDMode: false
+
 # -- Used by name template: to fill the app.kubernetes.io/name label
 # @default -- will use .Chart.Name
 nameOverride: ""
