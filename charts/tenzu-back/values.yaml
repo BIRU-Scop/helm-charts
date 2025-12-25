@@ -42,10 +42,14 @@ secretKey:
 # -- Used to populate `TENZU_TOKENS__SIGNING_KEY`
 tokenSigningKey:
 
-# -- additionnal environment variable to set on every jobs and on the backend and task queue Deployment objects.
-env: []
-# -- additionnal environment variable to set on every jobs and on the backend and task queue Deployment objects,
-# fetched from a secret or config map
+# -- additional environment variable to set on every jobs and on the backend and task queue Deployment objects.
+# Expect {name1: value1, name2: value2} format.
+env: {}
+# -- additional environment variable to set on every jobs and on the backend and task queue Deployment objects,
+# same as `env` but values are set through a secret. Expect {name1: value1, name2: value2} format.
+secretEnv: {}
+# -- additional environment variable to set on every jobs and on the backend and task queue Deployment objects,
+# fetched from a secret or config map. Expects array of `{configMapRef: {name: ""}}` or `{secretRef: {name: ""}}`
 envFrom: []
 
 email:

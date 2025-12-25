@@ -1,6 +1,6 @@
 # tenzu-back
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the API webservices backend and task queue worker of Tenzu
 
@@ -27,8 +27,9 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | sentry.environment | string | `nil` | Used to populate SENTRY_ENVIRONMENT, SENTRY_RELEASE will be set using the image.tag value |
 | secretKey | string | `nil` | Used to populate `TENZU_SECRET_KEY` |
 | tokenSigningKey | string | `nil` | Used to populate `TENZU_TOKENS__SIGNING_KEY` |
-| env | list | `[]` | additionnal environment variable to set on every jobs and on the backend and task queue Deployment objects. |
-| envFrom | list | `[]` | additionnal environment variable to set on every jobs and on the backend and task queue Deployment objects, fetched from a secret or config map |
+| env | object | `{}` | additional environment variable to set on every jobs and on the backend and task queue Deployment objects. Expect {name1: value1, name2: value2} format. |
+| secretEnv | object | `{}` | additional environment variable to set on every jobs and on the backend and task queue Deployment objects, same as `env` but values are set through a secret. Expect {name1: value1, name2: value2} format. |
+| envFrom | list | `[]` | additional environment variable to set on every jobs and on the backend and task queue Deployment objects, fetched from a secret or config map. Expects array of `{configMapRef: {name: ""}}` or `{secretRef: {name: ""}}` |
 | email.tls | bool | `true` | Used to populate `TENZU_EMAIL__EMAIL_USE_TLS` |
 | email.ssl | bool | `false` | Used to populate `TENZU_EMAIL__EMAIL_USE_SSL` |
 | email.port | int | `547` | Used to populate `TENZU_EMAIL__EMAIL_PORT` |
