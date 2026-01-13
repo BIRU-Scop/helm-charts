@@ -1,6 +1,6 @@
 # tenzu-back
 
-![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 2.0.1](https://img.shields.io/badge/Version-2.0.1-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the API webservices backend and task queue worker of Tenzu
 
@@ -14,7 +14,6 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| argoCDMode | bool | `false` | Set to true if you are using ArgoCD to deploy. Used to adjust some sync options. |
 | nameOverride | string | will use .Chart.Name | Used by name template: to fill the app.kubernetes.io/name label |
 | fullnameOverride | string | will use .Release.Name suffixed with name template, if .Release.Name does not already contains it | Used by fullname template: to fill the name of all created kubernetes component |
 | replicaCount | int | `1` | number of pod replicas for the api backend and the worker service if not using autoscaling see: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/ |
