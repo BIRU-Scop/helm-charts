@@ -63,12 +63,21 @@ email:
   defaultFrom:
   # -- (string) Used to populate `TENZU_EMAIL__EMAIL_HOST`
   host:
+  # -- (string) Used to populate `TENZU_SUPPORT_EMAIL`
+  supportEmail:
+  # -- Specify s3 configuration through an existing secret
+  existingSecret:
+    # -- (string) The secret name containing the email configuration.
+    # **required** if any one of `email.existingSecret.\*Key` are set
+    name:
+    # -- (string) key to access value in existingSecret, used to populate `TENZU_EMAIL__EMAIL_HOST_USER`
+    userKey:
+    # -- (string) key to access value in existingSecret, used to populate `TENZU_EMAIL__EMAIL_HOST_PASSWORD`
+    passwordKey:
   # -- (string) Used to populate `TENZU_EMAIL__EMAIL_HOST_USER`
   user:
   # -- (string) Used to populate `TENZU_EMAIL__EMAIL_HOST_PASSWORD`
   password:
-  # -- (string) Used to populate `TENZU_SUPPORT_EMAIL`
-  supportEmail:
 
 # -- Image to use for the application
 # see: https://kubernetes.io/docs/concepts/containers/images/

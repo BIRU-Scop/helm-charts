@@ -207,9 +207,23 @@ Create the email env variable
 - name: TENZU_EMAIL__EMAIL_PORT
   value: {{ .Values.email.port | quote }}
 - name: TENZU_EMAIL__EMAIL_HOST_USER
+{{- if .Values.email.existingSecret.userKey }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ required "An email secret name is mandatory if any of `email.existingSecret.\*.Key` are set" .Values.email.existingSecret.name }}
+      key: {{ required "An email userKey is mandatory if `email.existingSecret.name` is set" .Values.email.existingSecret.userKey }}
+{{- else }}
   value: {{ required "An email host user is mandatory" .Values.email.user }}
+{{- end }}
 - name: TENZU_EMAIL__EMAIL_HOST_PASSWORD
+{{- if .Values.email.existingSecret.passwordKey }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ required "An email secret name is mandatory if any of `email.existingSecret.\*.Key` are set" .Values.email.existingSecret.name }}
+      key: {{ required "An email passwordKey is mandatory if `email.existingSecret.name` is set" .Values.email.existingSecret.passwordKey }}
+{{- else }}
   value: {{ required "An email host password is mandatory" .Values.email.password }}
+{{- end }}
 - name: TENZU_EMAIL__EMAIL_USE_TLS
   value: {{ .Values.email.tls | quote}}
 - name: TENZU_EMAIL__EMAIL_USE_SSL
