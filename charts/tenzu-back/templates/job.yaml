@@ -31,6 +31,8 @@ spec:
           {{- include "tenzu-back.sentryEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.redisEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.postgresqlEnvValues" . | nindent 10 -}}
+          {{- include "tenzu-back.emailEnvValues" . | nindent 10 -}}
+          {{- include "tenzu-back.s3EnvValues" . | nindent 10 -}}
           {{- range $key, $val := .Values.env }}
           - name: {{ $key }}
             value: {{ $val | quote }}
@@ -91,6 +93,8 @@ spec:
               {{- include "tenzu-back.sentryEnvValues" . | nindent 14 -}}
               {{- include "tenzu-back.redisEnvValues" . | nindent 14 -}}
               {{- include "tenzu-back.postgresqlEnvValues" . | nindent 14 -}}
+              {{- include "tenzu-back.emailEnvValues" . | nindent 14 -}}
+              {{- include "tenzu-back.s3EnvValues" . | nindent 14 -}}
               {{- range $key, $val := .Values.env }}
               - name: {{ $key }}
                 value: {{ $val | quote }}
