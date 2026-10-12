@@ -1,6 +1,6 @@
 # tenzu-back
 
-![Version: 3.1.2](https://img.shields.io/badge/Version-3.1.2-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 3.2.0](https://img.shields.io/badge/Version-3.2.0-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the API webservices backend and task queue worker of Tenzu
 
@@ -58,7 +58,7 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | ingress.annotations | object | Will set kubernetes.io/ingress.class to ingress.className if needed | ingress annotations, can be "kubernetes.io/ingress.class", "kubernetes.io/tls-acme", "cert-manager.io/cluster-issuer", etc. |
 | ingress.hosts | list | `[]` | list of the hosts that will be exposed |
 | ingress.tls | list | `[]` | Expect values in format {secretName: "", hosts: []}, If one of the domain in `ingress.hosts` is also defined as `global.backendUrl/frontendUrl.host` You must take care to define tls for it if you also set `global.backendUrl/frontendUrl.scheme` to "https" |
-| resources | object | `{}` | container's resources definition set on every jobs and on the backend and task queue Deployment objects, If you want to set it, use the following format: `{limits: {cpu: 100m, memory: 128Mi}, requests: cpu: 100m, memory: 128Mi}}` |
+| resources | object | `{}` | container's resources definition set on every jobs and on the backend and task queue Deployment objects, If `worker.resources` is set, this ressources definition only applies to the backend Deployment object and cron jobs If you want to set it, use the following format: `{limits: {cpu: 100m, memory: 128Mi}, requests: cpu: 100m, memory: 128Mi}}` |
 | livenessProbe | object | `{"httpGet":{"path":"/api/v1/healthcheck","port":8000}}` | livenessProbe for the container of the backend service see: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ |
 | readinessProbe | object | `{"httpGet":{"path":"/api/v1/healthcheck","port":8000}}` | readinessProbe for the container of the backend service see: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ |
 | autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80,"targetMemoryUtilizationPercentage":80}` | Whether to define a HorizontalPodAutoscaler with the following scaling properties on cpu and memory consumption see: https://kubernetes.io/docs/concepts/workloads/autoscaling/ |
@@ -66,6 +66,11 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | tolerations | list | `[]` | tolerations pod property for the backend and task queue Deployment objects |
 | affinity | object | `{}` | affinity pod property for the backend and task queue Deployment objects |
 | cronJobs | list | `[]` | list of object in format {name: string, schedule: string, command: string[]} schedule and command should be set to the format expected by CronJob (see: https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) |
+| worker.resources | object | `{}` | container's resources definition for the task queue worker and the migration job, which need far more memory than the backend when importing big projects. Same format as `resources`, which is used when empty |
+| worker.ephemeral | object | `{"emptyDir":{"sizeLimit":"25Gi"},"mountPath":"/tmp","volumeClaimTemplate":{}}` | Ephemeral disk mounted on the task queue worker and the migration job when `s3.enable` is true, |
+| worker.ephemeral.mountPath | string | `"/tmp"` | Mount path of the volume inside the containers. `/tmp` is where temporary files go by default with TENZU_STORAGE__FILE_UPLOAD_TEMP_DIR |
+| worker.ephemeral.volumeClaimTemplate | object | `{}` | Spec of the volumeClaimTemplate (generic ephemeral volume, created and deleted with the pod), You should use this when the nodes' ephemeral storage can stay small. If empty, emptyDir is used instead |
+| worker.ephemeral.emptyDir | object | `{"sizeLimit":"25Gi"}` | Spec of the emptyDir used when `worker.ephemeral.volumeClaimTemplate` is empty. Note that some backend settings also limit the size of uploaded files |
 | persistentVolumeClaim.media | object | `{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"10Gi"}}}` | Spec of the PersistentVolumeClaim used by the volume for media files |
 | persistentVolumeClaim.media.resources.requests.storage | string | `"10Gi"` | Storage size for the PersistentVolumeClaim used by the volume for media files, change the capacity to what you need |
 | postgresql.auth | object | `{"database":null,"databaseKey":null,"existingSecret":null,"password":null,"passwordKey":null,"port":null,"portKey":null,"username":null,"usernameKey":null}` | To configure the postgresql connexion you can use an existing secret, direct values or a mix of both Only use one method for each expected value |

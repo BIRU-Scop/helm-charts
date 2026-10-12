@@ -286,3 +286,19 @@ Define the frontend and backend url
 - name: TENZU_FRONTEND_URL
   value: {{ printf "%s://%s" .Values.global.frontendUrl.scheme .Values.global.frontendUrl.host }}
 {{- end }}
+
+{{/*
+Ephemeral volume used when writing big files to the s3 storage
+*/}}
+{{- define "tenzu-back.ephemeralVolume" -}}
+- name: ephemeral
+  {{- if .Values.worker.ephemeral.volumeClaimTemplate }}
+  ephemeral:
+    volumeClaimTemplate:
+      spec:
+        {{- toYaml .Values.worker.ephemeral.volumeClaimTemplate | nindent 8 }}
+  {{- else }}
+  emptyDir:
+    {{- toYaml .Values.worker.ephemeral.emptyDir | nindent 4 }}
+  {{- end }}
+{{- end }}

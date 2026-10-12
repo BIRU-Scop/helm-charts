@@ -28,6 +28,10 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         command: ["./manage.py", "migrate", "--noinput"]
         env:
+          {{- if .Values.s3.enable }}
+          - name: TENZU_STORAGE__FILE_UPLOAD_TEMP_DIR
+            value: {{ .Values.worker.ephemeral.mountPath | quote }}
+          {{- end }}
           {{- include "tenzu-back.sentryEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.redisEnvValues" . | nindent 10 -}}
           {{- include "tenzu-back.postgresqlEnvValues" . | nindent 10 -}}
@@ -45,19 +49,24 @@ spec:
         {{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-          {{- toYaml .Values.resources | nindent 10 }}
-        {{- if not .Values.s3.enable }}
+          {{- toYaml (.Values.worker.resources | default .Values.resources) | nindent 10 }}
         volumeMounts:
+          {{- if .Values.s3.enable }}
+          - name: ephemeral
+            mountPath: {{ .Values.worker.ephemeral.mountPath }}
+          {{- else }}
           - name: media
             mountPath: /public/media/
-        {{- end }}
+          {{- end }}
 
-      {{- if not .Values.s3.enable }}
       volumes:
+        {{- if .Values.s3.enable }}
+        {{- include "tenzu-back.ephemeralVolume" . | nindent 8 }}
+        {{- else }}
         - name: media
           persistentVolumeClaim:
             claimName: pvc-{{ .Release.Name }}-media
-      {{- end }}
+        {{- end }}
 {{- range $job := .Values.cronJobs }}
 {{- with $ }}
 ---

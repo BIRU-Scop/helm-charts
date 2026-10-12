@@ -129,6 +129,7 @@ ingress:
   tls: []
 
 # -- container's resources definition set on every jobs and on the backend and task queue Deployment objects,
+# If `worker.resources` is set, this ressources definition only applies to the backend Deployment object and cron jobs
 # If you want to set it, use the following format: `{limits: {cpu: 100m, memory: 128Mi}, requests: cpu: 100m, memory: 128Mi}}`
 resources: {}
 
@@ -163,6 +164,21 @@ affinity: {}
 # -- list of object in format {name: string, schedule: string, command: string[]}
 # schedule and command should be set to the format expected by CronJob (see: https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
 cronJobs: []
+
+worker:
+  # -- container's resources definition for the task queue worker and the migration job, which need far more memory
+  # than the backend when importing big projects. Same format as `resources`, which is used when empty
+  resources: {}
+  # -- Ephemeral disk mounted on the task queue worker and the migration job when `s3.enable` is true,
+  ephemeral:
+    # -- Mount path of the volume inside the containers. `/tmp` is where temporary files go by default with TENZU_STORAGE__FILE_UPLOAD_TEMP_DIR
+    mountPath: /tmp
+    # -- Spec of the volumeClaimTemplate (generic ephemeral volume, created and deleted with the pod),
+    # You should use this when the nodes' ephemeral storage can stay small. If empty, emptyDir is used instead
+    volumeClaimTemplate: {}
+    # -- Spec of the emptyDir used when `worker.ephemeral.volumeClaimTemplate` is empty. Note that some backend settings also limit the size of uploaded files
+    emptyDir:
+      sizeLimit: 25Gi
 
 
 persistentVolumeClaim:

@@ -208,6 +208,10 @@ spec:
                   fieldPath: status.podIP
             - name: TENZU_MAX_UPLOAD_FILE_SIZE
               value: {{ .Values.global.maxUploadFileSize | quote }}
+            {{- if .Values.s3.enable }}
+            - name: TENZU_STORAGE__FILE_UPLOAD_TEMP_DIR
+              value: {{ .Values.worker.ephemeral.mountPath | quote }}
+            {{- end }}
             {{- include "tenzu-back.urls" . | nindent 12 -}}
             {{- include "tenzu-back.sentryEnvValues" . | nindent 12 -}}
             {{- include "tenzu-back.redisEnvValues" . | nindent 12 -}}
@@ -230,14 +234,19 @@ spec:
             - "procrastinate"
             - "worker"
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          {{- if not .Values.s3.enable }}
+            {{- toYaml (.Values.worker.resources | default .Values.resources) | nindent 12 }}
           volumeMounts:
+            {{- if .Values.s3.enable }}
+            - name: ephemeral
+              mountPath: {{ .Values.worker.ephemeral.mountPath }}
+            {{- else }}
             - name: media
               mountPath: /public/media
-          {{- end }}
-      {{- if not .Values.s3.enable }}
+            {{- end }}
       volumes:
+        {{- if .Values.s3.enable }}
+        {{- include "tenzu-back.ephemeralVolume" . | nindent 8 }}
+        {{- else }}
         - name: media
           persistentVolumeClaim:
             claimName: pvc-{{ .Release.Name }}-media
