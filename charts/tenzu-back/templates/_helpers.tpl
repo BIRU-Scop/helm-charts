@@ -302,3 +302,19 @@ Ephemeral volume used when writing big files to the s3 storage
     {{- toYaml .Values.worker.ephemeral.emptyDir | nindent 4 }}
   {{- end }}
 {{- end }}
+
+{{/*
+tls section shared by the Ingress objects
+*/}}
+{{- define "tenzu-back.ingressTls" -}}
+{{- with .Values.ingress.tls -}}
+tls:
+  {{- range . }}
+  - hosts:
+      {{- range .hosts }}
+      - {{ . | quote }}
+      {{- end }}
+    secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+{{- end }}

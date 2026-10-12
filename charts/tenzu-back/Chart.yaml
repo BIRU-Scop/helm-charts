@@ -12,9 +12,12 @@ description: A Helm chart to run the API webservices backend and task queue work
 # pipeline. Library charts do not define any templates and therefore cannot be deployed.
 type: application
 
+# Ingress objects use networking.k8s.io/v1
+kubeVersion: ">=1.19.0-0"
+
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 3.2.0
+version: 3.3.0
 
 home: "https://tenzu.net/docs"

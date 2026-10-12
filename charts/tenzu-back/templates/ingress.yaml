@@ -1,40 +1,30 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "tenzu-back.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
-{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
-  {{- end }}
-{{- end }}
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
     {{- include "tenzu-back.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
   annotations:
+    {{- if not (hasKey .Values.ingress.annotations "nginx.ingress.kubernetes.io/proxy-body-size") }}
+    {{- $maxUpload := .Values.global.maxUploadFileSize }}
+    {{- if or (not $maxUpload) (eq (toString $maxUpload) "null") }}
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    {{- else }}
+    # add 1MiB margin more than max file size
+    nginx.ingress.kubernetes.io/proxy-body-size: {{ add (int64 $maxUpload) 1048576 | quote }}
+    {{- end }}
+    {{- end }}
+    {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- with .Values.ingress.className }}
+  ingressClassName: {{ . }}
   {{- end }}
   {{- if .Values.ingress.tls }}
-  tls:
-    {{- range .Values.ingress.tls }}
-    - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
+  {{- include "tenzu-back.ingressTls" . | nindent 2 }}
   {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
@@ -49,4 +39,39 @@ spec:
                 port:
                   number: 80
     {{- end }}
+{{- if .Values.ingress.upload.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-upload
+  labels:
+    {{- include "tenzu-back.labels" . | nindent 4 }}
+  {{- with .Values.ingress.upload.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.ingress.className }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
+  {{- include "tenzu-back.ingressTls" . | nindent 2 }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          {{- range $.Values.ingress.upload.paths }}
+          - path: {{ . | quote }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $fullName }}-caddy
+                port:
+                  number: 80
+          {{- end }}
+    {{- end }}
+{{- end }}
 {{- end }}

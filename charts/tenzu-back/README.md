@@ -1,10 +1,14 @@
 # tenzu-back
 
-![Version: 3.2.0](https://img.shields.io/badge/Version-3.2.0-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 3.3.0](https://img.shields.io/badge/Version-3.3.0-informational?style=flat-square)  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart to run the API webservices backend and task queue worker of Tenzu
 
 **Homepage:** <https://tenzu.net/docs>
+
+## Requirements
+
+Kubernetes: `>=1.19.0-0`
 
 ## Values
 
@@ -53,11 +57,14 @@ A Helm chart to run the API webservices backend and task queue worker of Tenzu
 | service | object | `{"port":8000,"type":"ClusterIP"}` | see: https://kubernetes.io/docs/concepts/services-networking/service/ |
 | service.type | string | `"ClusterIP"` | service type defined for the backend and the reverse proxy |
 | service.port | int | `8000` | service port to access the backend |
-| ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":[],"tls":[]}` | properties used to define an Ingress see: https://kubernetes.io/docs/concepts/services-networking/ingress/ |
-| ingress.className | string | `""` | will be used to set ingressClassName and "kubernetes.io/ingress.class" annotation depending on k8s version |
-| ingress.annotations | object | Will set kubernetes.io/ingress.class to ingress.className if needed | ingress annotations, can be "kubernetes.io/ingress.class", "kubernetes.io/tls-acme", "cert-manager.io/cluster-issuer", etc. |
+| ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":[],"tls":[],"upload":{"annotations":{"nginx.ingress.kubernetes.io/proxy-body-size":"1g","nginx.ingress.kubernetes.io/proxy-read-timeout":"600","nginx.ingress.kubernetes.io/proxy-request-buffering":"off","nginx.ingress.kubernetes.io/proxy-send-timeout":"600","nginx.ingress.kubernetes.io/use-regex":"true"},"enabled":true,"paths":["/api/v1/(upload/.*|workspaces/[^/]+/projects/importations)$"]}}` | properties used to define an Ingress see: https://kubernetes.io/docs/concepts/services-networking/ingress/ |
+| ingress.className | string | `""` | will be used to set ingressClassName |
+| ingress.annotations | object | Will set "nginx.ingress.kubernetes.io/proxy-body-size" to `global.maxUploadFileSize` + 1MiB (or "0" = no limit) | ingress annotations, can be "kubernetes.io/tls-acme", "cert-manager.io/cluster-issuer", etc. unless it is given here |
 | ingress.hosts | list | `[]` | list of the hosts that will be exposed |
 | ingress.tls | list | `[]` | Expect values in format {secretName: "", hosts: []}, If one of the domain in `ingress.hosts` is also defined as `global.backendUrl/frontendUrl.host` You must take care to define tls for it if you also set `global.backendUrl/frontendUrl.scheme` to "https" |
+| ingress.upload | object | `{"annotations":{"nginx.ingress.kubernetes.io/proxy-body-size":"1g","nginx.ingress.kubernetes.io/proxy-read-timeout":"600","nginx.ingress.kubernetes.io/proxy-request-buffering":"off","nginx.ingress.kubernetes.io/proxy-send-timeout":"600","nginx.ingress.kubernetes.io/use-regex":"true"},"enabled":true,"paths":["/api/v1/(upload/.*|workspaces/[^/]+/projects/importations)$"]}` | Second ingress for the upload / importation url |
+| ingress.upload.paths | list | `["/api/v1/(upload/.*|workspaces/[^/]+/projects/importations)$"]` | paths of the upload endpoints, matched with `pathType: ImplementationSpecific`. |
+| ingress.upload.annotations | object | `{"nginx.ingress.kubernetes.io/proxy-body-size":"1g","nginx.ingress.kubernetes.io/proxy-read-timeout":"600","nginx.ingress.kubernetes.io/proxy-request-buffering":"off","nginx.ingress.kubernetes.io/proxy-send-timeout":"600","nginx.ingress.kubernetes.io/use-regex":"true"}` | annotations of the upload Ingress |
 | resources | object | `{}` | container's resources definition set on every jobs and on the backend and task queue Deployment objects, If `worker.resources` is set, this ressources definition only applies to the backend Deployment object and cron jobs If you want to set it, use the following format: `{limits: {cpu: 100m, memory: 128Mi}, requests: cpu: 100m, memory: 128Mi}}` |
 | livenessProbe | object | `{"httpGet":{"path":"/api/v1/healthcheck","port":8000}}` | livenessProbe for the container of the backend service see: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ |
 | readinessProbe | object | `{"httpGet":{"path":"/api/v1/healthcheck","port":8000}}` | readinessProbe for the container of the backend service see: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ |

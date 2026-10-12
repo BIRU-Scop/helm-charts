@@ -116,10 +116,11 @@ service:
 # see: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
   enabled: false
-  # -- will be used to set ingressClassName and "kubernetes.io/ingress.class" annotation depending on k8s version
+  # -- will be used to set ingressClassName
   className: ""
-  # -- ingress annotations, can be "kubernetes.io/ingress.class", "kubernetes.io/tls-acme", "cert-manager.io/cluster-issuer", etc.
-  # @default -- Will set kubernetes.io/ingress.class to ingress.className if needed
+  # -- ingress annotations, can be "kubernetes.io/tls-acme", "cert-manager.io/cluster-issuer", etc.
+  # @default -- Will set "nginx.ingress.kubernetes.io/proxy-body-size" to `global.maxUploadFileSize` + 1MiB (or "0" = no limit)
+  # unless it is given here
   annotations: {}
   # -- list of the hosts that will be exposed
   hosts: []
@@ -127,6 +128,19 @@ ingress:
   # If one of the domain in `ingress.hosts` is also defined as `global.backendUrl/frontendUrl.host`
   # You must take care to define tls for it if you also set `global.backendUrl/frontendUrl.scheme` to "https"
   tls: []
+  # -- Second ingress for the upload / importation url
+  upload:
+    enabled: true
+    # -- paths of the upload endpoints, matched with `pathType: ImplementationSpecific`.
+    paths:
+      - /api/v1/(upload/.*|workspaces/[^/]+/projects/importations)$
+    # -- annotations of the upload Ingress
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+      nginx.ingress.kubernetes.io/proxy-body-size: "1g"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
 
 # -- container's resources definition set on every jobs and on the backend and task queue Deployment objects,
 # If `worker.resources` is set, this ressources definition only applies to the backend Deployment object and cron jobs
