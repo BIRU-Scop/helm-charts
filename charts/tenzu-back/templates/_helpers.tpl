@@ -273,7 +273,7 @@ Define the secrets keys
 - name: TENZU_SECRET_KEY
   value: {{ required "a .secretKey is required" .Values.secretKey | quote }}
 - name: TENZU_TOKENS__SIGNING_KEY
-  value: {{ required "a .tokensSigningKey is required" .Values.tokenSigningKey | quote }}
+  value: {{ required "a .tokenSigningKey is required" .Values.tokenSigningKey | quote }}
 {{- end }}
 
 
